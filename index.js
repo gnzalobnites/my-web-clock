@@ -20,7 +20,7 @@ app.use(express.static('public'));
 var session = require('express-session');
 var mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
-mongoose.connect(uri);
+mongoose.connect(URI);
 var esquemaUsuario = mongoose.Schema({
   id: String,
   password: String,

@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path'); 
 const PORT = process.env.PORT || 3000;
+const URI = process.env.MONGODB_URI;
 var bodyParser = require('body-parser');
 var multer = require('multer');
 var upload = multer();
@@ -18,10 +19,8 @@ app.set('views', [
 app.use(express.static('public'));
 var session = require('express-session');
 var mongoose = require('mongoose');
-const uri = 'mongodb+srv://benitesgonzalogaston:MongoClusterGon232@gcluster.vvwhjbz.mongodb.net/?retryWrites=true&w=majority';
-
+const uri = 'mongodb://127.0.0.1:27017/mi_db';
 mongoose.connect(uri);
-//mongoose.connect('mongodb://127.0.0.1:27017/mi_db');
 var esquemaUsuario = mongoose.Schema({
   id: String,
   password: String,

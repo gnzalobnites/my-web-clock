@@ -1,11 +1,11 @@
 var fondoLocal = localStorage.getItem("fondo");
-document.body.style.backgroundColor =  fondoLocal;
+document.body.style.backgroundColor =  fondoLocal == null ? '#000' : fondoLocal;
 var fuenteLocal = localStorage.getItem("fuente"); 
-document.body.style.color = fuenteLocal;
+document.body.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
 var hamburguesa = document.getElementById("hamburguesa");
-hamburguesa.style.color = fuenteLocal;
+hamburguesa.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
 var marca = document.getElementById('marca');
-marca.style.color = fuenteLocal;
+marca.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
 
 var localHora = localStorage.getItem("tama_hora");
 var localSegs = localStorage.getItem("tama_segundos");
@@ -159,12 +159,11 @@ const redimFecha = (val4) => {
 
 
 function reset(){
-	localStorage.clear();
-	let prompt_valor = confirm("Volver a cargar la página para aplicar los cambios")
-	if(prompt_valor == true) {
-	location.reload()
-	}
-	alert();
+    let resp = confirm("¿Restaurar la configuración inicial?");
+    if (resp) {
+        localStorage.clear();
+        location.reload()
+    }
 }
 /*function valores(){
 	console.log("th = "+tamaHora+"; tf = "+tamaFecha);  

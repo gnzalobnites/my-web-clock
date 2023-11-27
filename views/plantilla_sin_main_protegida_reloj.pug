@@ -120,11 +120,12 @@ html(lang='es')
       marca.style.color = color_fuente_usuario;
 
       var tamano_hora_usuario = '#{tamano_hora}';
-      var tamaño_segundos_usuario = '#{tamaño_segundos}';
-      var tamaño_fecha_usuario = '#{tamaño_fecha}';
+      //var tamano_segundos_usuario = '#{tamano_segundos}';
+      var tamano_segundos_usuario = tamano_hora_usuario/2;
+      var tamaño_fecha_usuario = '#{tamano_fecha}';
 
       var tamaHora = tamano_hora_usuario == null ? 90 : tamano_hora_usuario; 
-      var tamaSeg = tamaño_segundos_usuario == null ? 45 : tamaño_segundos_usuario;
+      var tamaSeg = tamano_segundos_usuario == null ? 45 : tamano_segundos_usuario;
       var tamaFecha = tamaño_fecha_usuario == null ? 25 : tamaño_fecha_usuario;
 
       const addZero = i => {

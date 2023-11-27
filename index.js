@@ -25,9 +25,9 @@ var esquemaUsuario = mongoose.Schema({
   preferencias: {
     color_fondo: String,
     color_fuente: String,
-    tamaño_hora: Number,
-    tamaño_segundos: Number,
-    tamaño_fecha: Number
+    tamano_hora: Number,
+    tamano_segundos: Number,
+    tamano_fecha: Number
   }
 });
 var Usuarios_reloj = mongoose.model("Usuarios_reloj", esquemaUsuario);
@@ -104,9 +104,9 @@ app.get('/plantilla_sin_main_protegida_reloj', checkSignIn, function(req, res){
     //id: req.session.user.preferencias.color_fondo,
     color_fondo: req.session.user.preferencias.color_fondo,
     color_fuente: req.session.user.preferencias.color_fuente,
-    tamano_hora: req.session.user.preferencias.tamaño_hora,
-    tamaño_segundos: req.session.user.preferencias.tamaño_segundos,
-    tamaño_fecha: req.session.user.preferencias.tamaño_fecha,
+    tamano_hora: req.session.user.preferencias.tamano_hora,
+    tamano_segundos: req.session.user.preferencias.tamano_segundos,
+    tamano_fecha: req.session.user.preferencias.tamano_fecha,
   })
 });
 app.get('/logout', function(req, res){
@@ -141,9 +141,9 @@ app.post('/registrarse', function(req, res){
           preferencias: {
             color_fondo: '#000',
             color_fuente: '#00ff00',
-            tamaño_hora: 90,
-            tamaño_segundos: 45,
-            tamaño_fecha: 25
+            tamano_hora: 90,
+            tamano_segundos: 45,
+            tamano_fecha: 25
           }
         });
   
@@ -183,43 +183,62 @@ app.get('/signup-reloj', function (req, res) {
 });
 app.post('/editar-fondo/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-    const persona_encontrada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
+    const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
-        color_fondo: req.body.color_fondo
+        color_fondo: req.body.color_fondo,
+        color_fuente: persona_encontrada.preferencias.color_fuente,
+        tamano_hora: persona_encontrada.preferencias.tamano_hora,
+        tamano_segundos: persona_encontrada.preferencias.tamano_segundos,
+        tamano_fecha: persona_encontrada.preferencias.tamano_fecha
       }
     });
+
     if (persona_encontrada){
-      console.log('Color de fondo '+req.body.color_fondo+' guardado correctamente')
+      console.log(persona_encontrada.preferencias)
     }else{
       console.log('Error: no se encontró el usuario');
     }
 });
 app.post('/editar-fuente/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-    const persona_encontrada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
+    const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
-        color_fuente: req.body.color_fuente
+        color_fondo: persona_encontrada.preferencias.color_fondo,
+        color_fuente: req.body.color_fuente,
+        tamano_hora: persona_encontrada.preferencias.tamano_hora,
+        tamano_segundos: persona_encontrada.preferencias.tamano_segundos,
+        tamano_fecha: persona_encontrada.preferencias.tamano_fecha
       }
     });
+
     if (persona_encontrada){
-      console.log('Color de fuente '+req.body.color_fuente+ 'guardado correctamente')
+      console.log(persona_encontrada.preferencias)
     }else{
       console.log('Error: no se encontró el usuario');
     }
 });
 app.post('/editar-hora/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-    const persona_encontrada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
+    const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
-        color_fuente: req.body.tamano_hora
+        color_fondo: persona_encontrada.preferencias.color_fondo,
+        color_fuente: persona_encontrada.preferencias.color_fuente,
+        tamano_hora: req.body.tamano_hora,
+        tamano_segundos: persona_encontrada.preferencias.tamano_segundos,
+        tamano_fecha: persona_encontrada.preferencias.tamano_fecha
       }
     });
+
     if (persona_encontrada){
-      console.log('Color de fuente '+req.body.tamano_hora+ 'guardado correctamente')
+      console.log(persona_encontrada.preferencias)
     }else{
       console.log('Error: no se encontró el usuario');
     }
 });
+
 app.listen(PORT, function () {
     console.log(`El servidor está escuchando en el puerto ${PORT}`);
 });

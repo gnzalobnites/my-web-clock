@@ -1,0 +1,287 @@
+doctype html
+html(lang='es')
+  head
+    include ../../views/head.pug
+    
+  body#body
+    div#contenido_visible
+      fullscreen
+        p#top
+        header
+          include ../../views/navbar_protegida_sin_buscador.pug
+        include ../mi-reloj-web/main_reloj.pug
+        include ../../views/pie_con_fullscreen.pug
+    //include ../../views/scripts_final_body_reloj.pug
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js', integrity='sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm', crossorigin='anonymous', type='text/javascript')
+    script.
+      //prueba.js
+      function mostrar_botones_sesión(){
+          let div_int_reloj = document.getElementById('div_int_reloj');
+          div_int_reloj.setAttribute('class', 'gap-1 d-none');
+          let botones_sesion = document.getElementById('botones_sesion');
+          botones_sesion.setAttribute('class', 'gap-1 d-block');
+          let boton_cancelar = document.getElementById('boton_cancelar');
+          boton_cancelar.setAttribute('class', 'nav-item d-block');
+          let boton_acceder = document.getElementById('boton_acceder');
+          boton_acceder.setAttribute('class', 'nav-item d-none');
+      };
+      function ocultar_botones_sesión() {
+          let div_int_reloj = document.getElementById('div_int_reloj');
+          div_int_reloj.setAttribute('class', 'gap-1 d-block');
+          let botones_sesion = document.getElementById('botones_sesion');
+          botones_sesion.setAttribute('class', 'gap-1 d-none');
+          let boton_cancelar = document.getElementById('boton_cancelar');
+          boton_cancelar.setAttribute('class', 'nav-item d-none');
+          let boton_acceder = document.getElementById('boton_acceder');
+          boton_acceder.setAttribute('class', 'nav-item d-block');
+      };
+      function enviarSolicitud() {
+          var id = document.getElementById("id");
+          var password = document.getElementById('password');
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/reloj-pug/registrarse", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send({
+            id: id.value,
+            password: password.value,
+          });
+      };
+      //pantalla_completa.js
+      let my_use = document.getElementById("my_use");
+      let href = my_use.getAttribute("xlink:href");
+      href = "#arrows-fullscreen";
+      my_use.setAttribute("xlink:href", href);
+
+      function launch() {
+          launchFullScreen(document.documentElement);
+      }
+      
+      var my_li = document.getElementById("my_li");
+        my_li.addEventListener("click", launch);
+      
+      function cancel() {
+        cancelFullScreen();
+      }
+      
+      function launchFullScreen(element) {
+        if(element.requestFullScreen) {
+          element.requestFullScreen();
+        } else if(element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        }
+        let my_use = document.getElementById("my_use");
+      let href = my_use.getAttribute("xlink:href");
+      href = "#fullscreen-exit";
+      my_use.setAttribute("xlink:href", href);
+      var my_li = document.getElementById("my_li");
+        my_li.removeEventListener("click", launch);
+        my_li.addEventListener("click", cancel);
+      }
+      // Lanza en pantalla completa en navegadores que lo soporten
+      function cancelFullScreen() {
+          if(document.cancelFullScreen) {
+              document.cancelFullScreen();
+          } else if(document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if(document.webkitCancelFullScreen) {
+              document.webkitCancelFullScreen();
+          }
+          let my_use = document.       getElementById("my_use");
+      let href = my_use.getAttribute("xlink:href");
+      href = "#arrows-fullscreen";
+      my_use.setAttribute("xlink:href", href);
+      var my_li = document.getElementById("my_li");
+        my_li.removeEventListener("click", cancel);
+        my_li.addEventListener("click", launch);
+      }
+      //test.js
+      /*var fondoLocal = localStorage.getItem("fondo");
+      document.body.style.backgroundColor =  fondoLocal;
+      var fuenteLocal = localStorage.getItem("fuente"); 
+      document.body.style.color = fuenteLocal;
+      var hamburguesa = document.getElementById("hamburguesa");
+      hamburguesa.style.color = fuenteLocal;
+
+      var localHora = localStorage.getItem("tama_hora");
+      var localSegs = localStorage.getItem("tama_segundos");
+      var localFecha = localStorage.getItem("tama_fecha");*/
+
+      //Prueba datos usuario en MongoDB
+
+      var color_fondo_usuario = '#{color_fondo}';
+      document.body.style.backgroundColor =  color_fondo_usuario;
+      var color_fuente_usuario = '#{color_fuente}'; 
+      document.body.style.color = color_fuente_usuario;
+      var hamburguesa = document.getElementById("hamburguesa");
+      hamburguesa.style.color = color_fuente_usuario;
+      var marca = document.getElementById('marca');
+      marca.style.color = color_fuente_usuario;
+
+      var tamano_hora_usuario = '#{tamano_hora}';
+      var tamaño_segundos_usuario = '#{tamaño_segundos}';
+      var tamaño_fecha_usuario = '#{tamaño_fecha}';
+
+      var tamaHora = tamano_hora_usuario == null ? 90 : tamano_hora_usuario; 
+      var tamaSeg = tamaño_segundos_usuario == null ? 45 : tamaño_segundos_usuario;
+      var tamaFecha = tamaño_fecha_usuario == null ? 25 : tamaño_fecha_usuario;
+
+      const addZero = i => {
+        if (i < 10) {
+          i = `0${i}`;
+        }
+        return i;
+      }
+
+      function printTime() {
+          var d = new Date();
+          var hours = addZero(d.getHours());
+          var mins = addZero(d.getMinutes());
+          var secs = addZero(d.getSeconds());
+          
+          var diaSem = " ";
+          switch(d.getDay()){
+            case 0:
+                  diaSem = "domingo";
+                  break; 
+              case 1:
+                  diaSem = "lunes";
+                  break;
+              case 2:
+                  diaSem = "martes";
+                  break; 
+              case 3:
+                  diaSem = "miércoles";
+                  break;
+              case 4:
+                  diaSem = "jueves";
+                  break; 
+              case 5:
+                  diaSem = "viernes";
+                  break; 
+              case 6:
+                  diaSem = "sábado";
+                  break;
+              case 7:
+                  diaSem = "domingo";
+                  break; 
+          }
+          var diaMes = d.getDate();
+          switch(d.getMonth()){
+            case 0:
+                  mes = "enero";
+                  break;
+              case 1:
+                  mes = "febrero";
+                  break;
+              case 2:
+                    mes = "marzo";
+                    break;
+              case 3:
+                    mes = "abril";
+                    break;
+              case 4:
+                  mes = "mayo";
+                  break;
+              case 5:
+                  mes = "junio";
+                  break;
+              case 6:
+                    mes = "julio";
+                    break;
+              case 7:
+                    mes = "agosto";
+                    break;
+              case 8:
+                  mes = "septiembre";
+                  break;
+              case 9:
+                  mes = "octubre";
+                  break;
+              case 10:
+                    mes = "noviembre";
+                    break;
+              case 11:
+                    mes = "diciembre";
+                    break;
+          }
+        var horaCadena = `<span style="font-size: ${tamaHora}pt">${hours}:${mins}</span><span style="font-size: ${tamaSeg}pt">:${secs}</span>`;
+
+        var fechaCadena = `<span style='font-size:${tamaFecha}pt'>${diaSem} ${diaMes} de ${mes}</span>`
+
+        document.getElementById("hs_y_mins").innerHTML = horaCadena;
+
+        document.getElementById("fecha").innerHTML =  fechaCadena; 
+
+        var max_tam_hora = document.getElementById("max_tam_hora");
+        var anchoPantalla = window.innerWidth;
+        //console.log(anchoPantalla);
+        if(anchoPantalla >= 601) {
+          max_tam_hora.max = 250;
+        } else {
+          max_tam_hora.max = 100;
+        }
+        
+        var max_tam_fecha = document.getElementById("max_tam_fecha");
+        var anchoPantalla = window.innerWidth;
+        //console.log(anchoPantalla);
+        if(anchoPantalla >= 601) {
+          max_tam_fecha.max = 60;
+        } else {
+          max_tam_fecha.max = 30;
+        }
+      }
+
+      window.onload = setInterval(printTime, 1000);
+
+      function cambiarFondo(val) {
+          document.body.style.backgroundColor = val;
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "/reloj-pug/editar-fondo/#{id}", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify({color_fondo: val}));
+      };
+      function cambiarFuente(val2) {
+          document.body.style.color = val2;
+          var hamburguesa = document.getElementById("hamburguesa");
+          hamburguesa.style.color = val2;
+          let marca = document.getElementById('marca');
+          marca.style.color = val2;
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "/reloj-pug/editar-fuente/#{id}", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify({color_fuente: val2}));
+      }
+
+      function redimHora(val3) {
+        //console.log(val3);
+          tamaHora = val3;
+          tamaSeg = val3/2;
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "/reloj-pug/editar-hora/#{id}", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify({tamano_hora: val3}));
+      }
+      /*function redimFecha(val4) {
+          tamaFecha = val4;
+          localStorage.setItem("tama_fecha", val4);
+      }*/
+
+      const redimFecha = (val4) => {
+        tamaFecha = val4;
+          localStorage.setItem("tama_fecha", val4);
+      } 
+
+
+      function reset(){
+        localStorage.clear();
+        let prompt_valor = confirm("Volver a cargar la página para aplicar los cambios")
+        if(prompt_valor == true) {
+        location.reload()
+        }
+        alert();
+      }
+      /*function valores(){
+        console.log("th = "+tamaHora+"; tf = "+tamaFecha);  
+      }*/

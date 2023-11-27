@@ -1,0 +1,61 @@
+main
+  div#div_ext_reloj.d-flex.justify-content-center.align-items-center.gap-1(style="height: 55vh; padding-top: 25vh")
+    div#div_int_reloj.gap-1.d-block
+      if(message)
+        h4.d-flex.justify-content-center #{message}
+      form(action = "/reloj-pug/login-reloj" method = "POST")
+        input(name = "id" type = "text" required placeholder = "ID de usuario")
+        br
+        br
+        input(name = "password" type = "password" required placeholder = "Contraseña")
+        br
+        br
+        div.d-flex.justify-content-center
+          button.btn.btn-outline-primary(type = "Submit") Iniciar sesión
+        br
+        
+        div.d-flex.justify-content-center.d-none
+          button.btn.btn-info(onclick="enviarSolicitud()") Enviar datos al servidor
+script
+    | function enviarSolicitud() {
+    |    var xhr = new XMLHttpRequest();
+    |    xhr.open("POST", "/login", true);
+    |    xhr.setRequestHeader("Content-Type", "application/json");
+    |
+    |    // Convertir datos a formato JSON y enviarlos en el cuerpo de la solicitud
+    |    var data = JSON.stringify({
+    |      id: "Miguel",
+    |      password: "Miguel1234"
+    |    });
+    |
+    |    /*xhr.onreadystatechange = function () {
+    |      if (xhr.readyState == 4) {
+    |       // Verificar si la solicitud fue exitosa (código de estado 200)
+    |        if (xhr.status == 200) {
+    |          // Aquí puedes manejar la respuesta del servidor, si es necesario
+    |          console.log("Respuesta del servidor:", xhr.responseText);
+    |        } else {
+    |          console.error("Error en la solicitud. Código de estado:", xhr.status);
+    |        }
+    |      }
+    |    };*/
+    |
+    |    /*xhr.onreadystatechange = function () {
+    |      if (xhr.readyState == 4) {
+    |        if (xhr.status == 200) {
+    |          // Crear un elemento div para contener la respuesta HTML del servidor
+    |          //var responseContainer = document.createElement('div');
+    |          //responseContainer.innerHTML = xhr.responseText;
+    |
+    |          // Agregar la respuesta al cuerpo del documento
+    |          //document.body.appendChild(responseContainer);
+    |          document.body.innerHTML = xhr.responseText;
+    |        } else {
+    |          console.error("Error en la solicitud. Código de estado:", xhr.status);
+    |        }
+    |      }
+    |    };*/
+    | 
+    |    xhr.send(data);
+    |  }
+

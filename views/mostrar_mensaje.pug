@@ -1,0 +1,11 @@
+html
+  head
+    title Persona
+  body
+    if(tipo == "error")
+      h3(style = "color:red") #{mensaje}
+    else
+      h3 #{mensaje}
+      ul 
+        li nombre: #{persona.id}
+      

@@ -1,0 +1,23 @@
+nav#nav1.navbar.fixed-top(style="padding-left: 5px; padding-right: 5px")
+  div.container-fluid
+    h1.navbar-brand(href="#")
+        span#marca Mi reloj web
+    button.navbar-toggler(type="button", data-bs-toggle="collapse", data-bs-target="#navbarText", aria-controls="navbarText", aria-expanded="false", aria-label="Toggle navigation")
+        span#hamburguesa(style="color: #fff; font-size: 2em;") ≡
+    div#navbarText.collapse.navbar-collapse
+        ul.navbar-nav.me-auto.mb-2.mb-lg-0.list-unstyled
+          li.dropdown-item
+            label Color de fondo: 
+              input(type="color", name="color", onchange="cambiarFondo(this.value)")
+            // <a class="nav-link active" aria-current="page" href="#">Home</a>
+          li.dropdown-item
+            // <a class="nav-link" href="#">Features</a>
+            label Color de fuente: 
+              input(type="color", name="color", onchange="cambiarFuente(this.value)")
+          li#boton_cancelar.dropdown-item
+            label
+              a(href='/reloj-pug')
+                button.btn.btn-danger.btn-sm.m-2(onclick="") Cancelar
+          //li.dropdown-item
+            label
+              button.btn.btn-secondary.btn-sm.m-2(onclick="reset()") Reiniciar apariencia

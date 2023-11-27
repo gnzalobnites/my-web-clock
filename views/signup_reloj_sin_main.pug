@@ -1,0 +1,134 @@
+doctype html
+html(lang='es')
+  head
+    include head.pug
+    
+  body#body
+    div#contenido_visible
+      fullscreen
+        p#top
+        header
+          include navbar_sin_buscador_acceso.pug 
+        include main_signup_reloj.pug         
+        include pie_con_fullscreen.pug
+    //include ../../views/scripts_final_body_reloj.pug
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js', integrity='sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm', crossorigin='anonymous', type='text/javascript')
+    script.
+      //prueba.js
+      function mostrar_botones_sesión(){
+          //alert("Hola desde /public/js")
+          let div_int_reloj = document.getElementById('div_int_reloj');
+          div_int_reloj.setAttribute('class', 'gap-1 d-none');
+          let botones_sesion = document.getElementById('botones_sesion');
+          botones_sesion.setAttribute('class', 'gap-1 d-block');
+          let boton_cancelar = document.getElementById('boton_cancelar');
+          boton_cancelar.setAttribute('class', 'nav-item d-block');
+          let boton_acceder = document.getElementById('boton_acceder');
+          boton_acceder.setAttribute('class', 'nav-item d-none');
+      };
+      function ocultar_botones_sesión() {
+          let div_int_reloj = document.getElementById('div_int_reloj');
+          div_int_reloj.setAttribute('class', 'gap-1 d-block');
+          let botones_sesion = document.getElementById('botones_sesion');
+          botones_sesion.setAttribute('class', 'gap-1 d-none');
+          let boton_cancelar = document.getElementById('boton_cancelar');
+          boton_cancelar.setAttribute('class', 'nav-item d-none');
+          let boton_acceder = document.getElementById('boton_acceder');
+          boton_acceder.setAttribute('class', 'nav-item d-block');
+      };
+      function enviarSolicitud() {
+          var id = document.getElementById("id");
+          var password = document.getElementById('password');
+
+          var xhr = new XMLHttpRequest();
+          xhr.open("POST", "/reloj-pug/registrarse", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send({
+            id: id.value,
+            password: password.value,
+          });
+      };
+      let my_use = document.getElementById("my_use");
+      let href = my_use.getAttribute("xlink:href");
+      href = "#arrows-fullscreen";
+      my_use.setAttribute("xlink:href", href);
+
+      function launch() {
+          launchFullScreen(document.documentElement);
+      }
+      
+      var my_li = document.getElementById("my_li");
+        my_li.addEventListener("click", launch);
+      
+      function cancel() {
+        cancelFullScreen();
+      }
+      
+      function launchFullScreen(element) {
+        if(element.requestFullScreen) {
+          element.requestFullScreen();
+        } else if(element.mozRequestFullScreen) {
+          element.mozRequestFullScreen();
+        } else if(element.webkitRequestFullScreen) {
+          element.webkitRequestFullScreen();
+        }
+        let my_use = document.getElementById("my_use");
+      let href = my_use.getAttribute("xlink:href");
+      href = "#fullscreen-exit";
+      my_use.setAttribute("xlink:href", href);
+      var my_li = document.getElementById("my_li");
+        my_li.removeEventListener("click", launch);
+        my_li.addEventListener("click", cancel);
+      }
+      // Lanza en pantalla completa en navegadores que lo soporten
+      function cancelFullScreen() {
+          if(document.cancelFullScreen) {
+              document.cancelFullScreen();
+          } else if(document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if(document.webkitCancelFullScreen) {
+              document.webkitCancelFullScreen();
+          }
+          let my_use = document.       getElementById("my_use");
+      let href = my_use.getAttribute("xlink:href");
+      href = "#arrows-fullscreen";
+      my_use.setAttribute("xlink:href", href);
+      var my_li = document.getElementById("my_li");
+        my_li.removeEventListener("click", cancel);
+        my_li.addEventListener("click", launch);
+      }
+      //test.js
+        var fondoLocal = localStorage.getItem("fondo");
+        document.body.style.backgroundColor =  fondoLocal;
+        var fuenteLocal = localStorage.getItem("fuente"); 
+        document.body.style.color = fuenteLocal;
+        var hamburguesa = document.getElementById("hamburguesa");
+        hamburguesa.style.color = fuenteLocal;
+        var marca = document.getElementById('marca');
+        marca.style.color = fuenteLocal;
+
+        function cambiarFondo(val) {
+            document.body.style.backgroundColor = val;
+            localStorage.setItem("fondo", val);
+
+        }
+        function cambiarFuente(val2) {
+            document.body.style.color = val2;
+            let hamburguesa = document.getElementById("hamburguesa");
+            hamburguesa.style.color = val2;
+            let marca = document.getElementById('marca');
+            marca.style.color = val2;
+            localStorage.setItem("fuente", val2);
+        }
+
+        function reset(){
+          localStorage.clear();
+          let prompt_valor = confirm("Volver a cargar la página para aplicar los cambios")
+          if(prompt_valor == true) {
+          location.reload()
+          }
+          alert();
+        }
+        /*function valores(){
+          console.log("th = "+tamaHora+"; tf = "+tamaFecha);  
+        }*/

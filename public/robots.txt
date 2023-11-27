@@ -4,4 +4,4 @@ Disallow: /nogooglebot/
 User-agent: *
 Allow: /
 
-Sitemap: https://gonzalo-benites-webpages.on.drv.tw/apps/mi-reloj-web/mapadelsitioreloj.txt
+Sitemap: https://my-web-clock.onrender.com/mapa_del_sitio_reloj.txt

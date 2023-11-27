@@ -176,7 +176,7 @@ app.post('/registrarse', function(req, res){
 app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){
     console.log(err);
     //El usuario debe estar autenticado. Redirígelo para iniciar sesión.
-    res.redirect('/login');
+    res.redirect('/login-reloj');
 });
 app.get('/signup-reloj', function (req, res) {
     res.render("signup_reloj_sin_main")

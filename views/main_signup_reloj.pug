@@ -3,7 +3,7 @@ main
     div#div_int_reloj.gap-1.d-block
       if(message)
         h4 #{message}
-      form(action = "/reloj-pug/registrarse" method = "POST")
+      form(action = "/registrarse" method = "POST")
         input(id="id" name = "id" type = "text" required placeholder = "ID de usuario")
         br
         br

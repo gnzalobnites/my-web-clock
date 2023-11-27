@@ -3,7 +3,7 @@ main
     div#div_int_reloj.gap-1.d-block
       if(message)
         h4.d-flex.justify-content-center #{message}
-      form(action = "/reloj-pug/login-reloj" method = "POST")
+      form(action = "/login-reloj" method = "POST")
         input(name = "id" type = "text" required placeholder = "ID de usuario")
         br
         br

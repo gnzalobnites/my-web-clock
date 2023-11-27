@@ -1,16 +1,16 @@
 doctype html
 html(lang='es')
   head
-    include ../../views/head.pug
+    include head.pug
     
   body#body
     div#contenido_visible
       fullscreen
         p#top
         header
-          include ../../views/navbar_protegida_sin_buscador.pug
-        include ../mi-reloj-web/main_reloj.pug
-        include ../../views/pie_con_fullscreen.pug
+          include navbar_protegida_sin_buscador.pug
+        include main_reloj.pug
+        include pie_con_fullscreen.pug
     //include ../../views/scripts_final_body_reloj.pug
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js', integrity='sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm', crossorigin='anonymous', type='text/javascript')
     script.
@@ -238,7 +238,7 @@ html(lang='es')
       function cambiarFondo(val) {
           document.body.style.backgroundColor = val;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/reloj-pug/editar-fondo/#{id}", true);
+          xhr.open("POST", "/editar-fondo/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({color_fondo: val}));
       };
@@ -249,7 +249,7 @@ html(lang='es')
           let marca = document.getElementById('marca');
           marca.style.color = val2;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/reloj-pug/editar-fuente/#{id}", true);
+          xhr.open("POST", "/editar-fuente/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({color_fuente: val2}));
       }
@@ -259,7 +259,7 @@ html(lang='es')
           tamaHora = val3;
           tamaSeg = val3/2;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/reloj-pug/editar-hora/#{id}", true);
+          xhr.open("POST", "/editar-hora/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({tamano_hora: val3}));
       }

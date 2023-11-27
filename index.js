@@ -178,10 +178,10 @@ app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){
     //El usuario debe estar autenticado. Redirígelo para iniciar sesión.
     res.redirect('/login');
 });
-  router.get('/signup-reloj', function (req, res) {
+app.get('/signup-reloj', function (req, res) {
     res.render("signup_reloj_sin_main")
-  });
-  router.post('/editar-fondo/:id', async function(req, res){
+});
+app.post('/editar-fondo/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
@@ -193,8 +193,8 @@ app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){
     }else{
       console.log('Error: no se encontró el usuario');
     }
-  });
-  router.post('/editar-fuente/:id', async function(req, res){
+});
+app.post('/editar-fuente/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
@@ -206,8 +206,8 @@ app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){
     }else{
       console.log('Error: no se encontró el usuario');
     }
-  });
-  router.post('/editar-hora/:id', async function(req, res){
+});
+app.post('/editar-hora/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
@@ -219,7 +219,7 @@ app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){
     }else{
       console.log('Error: no se encontró el usuario');
     }
-  });
+});
 app.listen(PORT, function () {
     console.log(`El servidor está escuchando en el puerto ${PORT}`);
 });

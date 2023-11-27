@@ -1,1 +1,3 @@
-https://gonzalo-benites-webpages.on.drv.tw/apps/mi-reloj-web/
+https://my-web-clock.onrender.com
+https://my-web-clock.onrender.com/login-reloj
+https://my-web-clock.onrender.com/registrarse

@@ -1,0 +1,14 @@
+doctype html
+html(lang='es')
+  head
+    include head.pug
+    
+  body#body
+    div#contenido_visible
+      fullscreen
+        p#top
+        header
+          include navbar_sin_buscador.pug
+        include main_reloj.pug 
+        include pie_con_fullscreen.pug
+      include scripts_final_body_reloj.pug

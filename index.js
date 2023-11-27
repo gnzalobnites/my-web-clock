@@ -18,7 +18,10 @@ app.set('views', [
 app.use(express.static('public'));
 var session = require('express-session');
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://127.0.0.1:27017/mi_db');
+const uri = 'mongodb+srv://benitesgonzalogaston:MongoClusterGon232@gcluster.vvwhjbz.mongodb.net/?retryWrites=true&w=majority';
+
+mongoose.connect(uri);
+//mongoose.connect('mongodb://127.0.0.1:27017/mi_db');
 var esquemaUsuario = mongoose.Schema({
   id: String,
   password: String,
@@ -69,7 +72,7 @@ app.get('/login-reloj', function (req, res) {
     res.render("login_reloj_sin_main")
   })
 app.post('/login-reloj', function(req, res){
-    console.log(req.body.id +' '+ req.body.password);
+    //console.log(req.body.id +' ha iniciado sesión');
     if(!req.body.id || !req.body.password){
         res.render('login', {message: "Por favor, introduce tanto el ID como la contraseña"});
     } else {
@@ -94,7 +97,7 @@ function checkSignIn(req, res, next){
         next(); //Si la sesión existe, continúa a la página
     } else {
         var err = new Error("No has iniciado sesión.");
-        console.log(req.session.user);
+        //console.log(req.session.user.id);
         next(err); //Error, intentando acceder a una página no autorizada
     }
 }
@@ -111,7 +114,7 @@ app.get('/plantilla_sin_main_protegida_reloj', checkSignIn, function(req, res){
 });
 app.get('/logout', function(req, res){
   req.session.destroy(function(){
-     console.log("Usuario desconectado.")
+     //console.log("Usuario desconectado.")
   });
   res.redirect('/');
 });
@@ -170,7 +173,7 @@ app.post('/registrarse', function(req, res){
       });
       console.error('Error searching for document:', err);
     });
-    console.log(reqBody);
+    //console.log(reqBody);
   }
 });
 app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){

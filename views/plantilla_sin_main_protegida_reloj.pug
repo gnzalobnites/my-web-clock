@@ -256,7 +256,6 @@ html(lang='es')
       }
 
       function redimHora(val3) {
-        //console.log(val3);
           tamaHora = val3;
           tamaSeg = val3/2;
           let xhr = new XMLHttpRequest();
@@ -270,8 +269,11 @@ html(lang='es')
       }*/
 
       const redimFecha = (val4) => {
-        tamaFecha = val4;
-          localStorage.setItem("tama_fecha", val4);
+          tamaFecha = val4;
+          let xhr = new XMLHttpRequest();
+          xhr.open("POST", "/editar-fecha/#{id}", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify({tamano_fecha: val4}));
       } 
 
 

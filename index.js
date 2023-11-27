@@ -238,6 +238,25 @@ app.post('/editar-hora/:id', async function(req, res){
       console.log('Error: no se encontró el usuario');
     }
 });
+app.post('/editar-fecha/:id', async function(req, res){
+  const Usuarios_reloj = mongoose.model('Usuarios_reloj');
+  const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
+  const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    preferencias: {
+      color_fondo: persona_encontrada.preferencias.color_fondo,
+      color_fuente: persona_encontrada.preferencias.color_fuente,
+      tamano_hora: persona_encontrada.preferencias.tamano_hora,
+      tamano_segundos: persona_encontrada.preferencias.tamano_segundos,
+      tamano_fecha: req.body.tamano_fecha
+    }
+  });
+
+  if (persona_encontrada){
+    console.log(persona_encontrada.preferencias)
+  }else{
+    console.log('Error: no se encontró el usuario');
+  }
+});
 
 app.listen(PORT, function () {
     console.log(`El servidor está escuchando en el puerto ${PORT}`);

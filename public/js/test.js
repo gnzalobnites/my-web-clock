@@ -157,7 +157,7 @@ const redimFecha = (val4) => {
     localStorage.setItem("tama_fecha", val4);
 } 
 
-
+//Resetear configuración
 function reset(){
     let resp = confirm("¿Restaurar la configuración inicial?");
     if (resp) {

@@ -97,19 +97,6 @@ html(lang='es')
         my_li.addEventListener("click", launch);
       }
       //test.js
-      /*var fondoLocal = localStorage.getItem("fondo");
-      document.body.style.backgroundColor =  fondoLocal;
-      var fuenteLocal = localStorage.getItem("fuente"); 
-      document.body.style.color = fuenteLocal;
-      var hamburguesa = document.getElementById("hamburguesa");
-      hamburguesa.style.color = fuenteLocal;
-
-      var localHora = localStorage.getItem("tama_hora");
-      var localSegs = localStorage.getItem("tama_segundos");
-      var localFecha = localStorage.getItem("tama_fecha");*/
-
-      //Prueba datos usuario en MongoDB
-
       var color_fondo_usuario = '#{color_fondo}';
       document.body.style.backgroundColor =  color_fondo_usuario;
       var color_fuente_usuario = '#{color_fuente}'; 
@@ -239,7 +226,7 @@ html(lang='es')
       function cambiarFondo(val) {
           document.body.style.backgroundColor = val;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/editar-fondo/#{id}", true);
+          xhr.open("POST", "/acceso/editar-fondo/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({color_fondo: val}));
       };
@@ -250,7 +237,7 @@ html(lang='es')
           let marca = document.getElementById('marca');
           marca.style.color = val2;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/editar-fuente/#{id}", true);
+          xhr.open("POST", "/acceso/editar-fuente/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({color_fuente: val2}));
       }
@@ -259,19 +246,15 @@ html(lang='es')
           tamaHora = val3;
           tamaSeg = val3/2;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/editar-hora/#{id}", true);
+          xhr.open("POST", "/acceso/editar-hora/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({tamano_hora: val3}));
       }
-      /*function redimFecha(val4) {
-          tamaFecha = val4;
-          localStorage.setItem("tama_fecha", val4);
-      }*/
 
       const redimFecha = (val4) => {
           tamaFecha = val4;
           let xhr = new XMLHttpRequest();
-          xhr.open("POST", "/editar-fecha/#{id}", true);
+          xhr.open("POST", "/acceso/editar-fecha/#{id}", true);
           xhr.setRequestHeader("Content-Type", "application/json");
           xhr.send(JSON.stringify({tamano_fecha: val4}));
       } 
@@ -285,6 +268,3 @@ html(lang='es')
         }
         alert();
       }
-      /*function valores(){
-        console.log("th = "+tamaHora+"; tf = "+tamaFecha);  
-      }*/

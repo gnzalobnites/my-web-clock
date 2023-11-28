@@ -4,7 +4,8 @@ var session = require('express-session');
 const URI = process.env.MONGODB_URI;
 var mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
-mongoose.connect(uri);
+//mongoose.connect(uri);
+mongoose.connect(URI);
 var esquemaUsuario = mongoose.Schema({
     id: String,
     password: String,
@@ -151,7 +152,7 @@ router.post('/editar-fondo/:id', async function(req, res){
     });
 
     if (persona_encontrada){
-      console.log(persona_encontrada.preferencias)
+      //console.log(persona_encontrada.preferencias)
     }else{
       console.log('Error: no se encontró el usuario');
     }
@@ -170,7 +171,7 @@ router.post('/editar-fuente/:id', async function(req, res){
     });
 
     if (persona_encontrada){
-      console.log(persona_encontrada.preferencias)
+      //console.log(persona_encontrada.preferencias)
     }else{
       console.log('Error: no se encontró el usuario');
     }
@@ -189,7 +190,7 @@ router.post('/editar-hora/:id', async function(req, res){
     });
 
     if (persona_encontrada){
-      console.log(persona_encontrada.preferencias)
+      //console.log(persona_encontrada.preferencias)
     }else{
       console.log('Error: no se encontró el usuario');
     }
@@ -208,7 +209,7 @@ router.post('/editar-fecha/:id', async function(req, res){
   });
 
   if (persona_encontrada){
-    console.log(persona_encontrada.preferencias)
+    //console.log(persona_encontrada.preferencias)
   }else{
     console.log('Error: no se encontró el usuario');
   }

@@ -11,9 +11,9 @@ var localHora = localStorage.getItem("tama_hora");
 var localSegs = localStorage.getItem("tama_segundos");
 var localFecha = localStorage.getItem("tama_fecha"); 
 
-var tamaHora = localHora == null ? 90 : localHora; 
-var tamaSeg = localSegs == null ? 45 : localSegs ;
-var tamaFecha = localFecha == null ? 25 : localFecha; 
+var tamaHora = localHora == null ? 50 : localHora; 
+var tamaSeg = localSegs == null ? 25 : localSegs ;
+var tamaFecha = localFecha == null ? 12 : localFecha; 
 
 /*function addZero(i) {
   if (i < 10) {i = "0" + i}

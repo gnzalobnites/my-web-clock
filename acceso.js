@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 var session = require('express-session');
+const URI = process.env.MONGODB_URI;
 var mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
 mongoose.connect(uri);
@@ -79,7 +80,7 @@ router.get('/registrarse', function(req, res){
 router.post('/registrarse', function(req, res){
   var reqBody = req.body;
   if (!reqBody.id || !reqBody.password) {
-    res.render('mostrar_mensaje', {
+    res.render('signup_reloj_sin_main', {
       mensaje: "Lo siento, proporcionaste información incorrecta", 
       tipo: "error"
     });
@@ -111,10 +112,10 @@ router.post('/registrarse', function(req, res){
             tipo: "éxito", 
             persona: reqBody
           });
-          console.log('Document saved successfully');
+          //console.log('Document saved successfully');
         }).catch(err => {
-          res.render('mostrar_mensaje', {
-            mensaje: "Error de base de datos", 
+          res.render('signup_reloj_sin_main', {
+            mensaje: "Error de base de datos. Inténtelo de nuevo más tarde", 
             tipo: "error"
           });
           console.error('Error saving document:', err);
@@ -122,8 +123,8 @@ router.post('/registrarse', function(req, res){
       }
     }).catch(err => {
       // Manejar errores de la búsqueda de usuario
-      res.render('mostrar_mensaje', {
-        mensaje: "Error de base de datos", 
+      res.render('signup_reloj_sin_main', {
+        mensaje: "Error de base de datos. Inténtelo de nuevo más tarde", 
         tipo: "error"
       });
       console.error('Error searching for document:', err);

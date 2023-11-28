@@ -135,9 +135,11 @@ function cambiarFondo(val) {
 }
 function cambiarFuente(val2) {
     document.body.style.color = val2;
-    var hamburguesa = document.getElementById("hamburguesa");
+    let hamburguesa = document.getElementById("hamburguesa");
     hamburguesa.style.color = val2;
-    localStorage.setItem("fuente", val2);
+    let marca = document.getElementById('marca');
+    marca.style.color = val2;
+    localStorage.setItem("fuente", val2); 
 }
 
 function redimHora(val3) {

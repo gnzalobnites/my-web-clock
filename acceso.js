@@ -1,76 +1,30 @@
 const express = require('express');
-const path = require('path'); 
-const PORT = process.env.PORT || 3000;
-const URI = process.env.MONGODB_URI;
-var bodyParser = require('body-parser');
-var multer = require('multer');
-var upload = multer();
-var cookieParser = require('cookie-parser');
-const app = express();
-const acceso = require('./acceso.js')
-app.use(cookieParser());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(upload.array());
-app.use('/acceso', acceso);
-app.set('view engine', 'pug');
-app.set('views', [
-  './views'
-]);
-app.use(express.static('public'));
-/* var session = require('express-session');
+const router = express.Router();
+var session = require('express-session');
 var mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
-mongoose.connect(uri); */
-//mongoose.connect(URI);
-/* var esquemaUsuario = mongoose.Schema({
-  id: String,
-  password: String,
-  preferencias: {
-    color_fondo: String,
-    color_fuente: String,
-    tamano_hora: Number,
-    tamano_segundos: Number,
-    tamano_fecha: Number
-  }
-});
-var Usuarios_reloj = mongoose.model("Usuarios_reloj", esquemaUsuario);
-app.use(session({
-  saveUninitialized: false,
-  resave: true,
-  secret: 'un-secreto-muy-seguro'
-})); */
-app.get('/', function (req, res) {
-    // Agregar encabezados para deshabilitar la caché
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, max-age=0');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-	res.render('plantilla_sin_main_reloj', {
-        title: "Mi reloj web",
-        google_site_verification_content:"IlwE29oPx3IJib2qhYUc07f7uJp7SpVM12hd1DnPiqE",
-        apple_touch_icon_180_href: 'https://my-web-clock.onrender.com/apple-touch-icon.png',
-        icon_32_href: '/favicon-32x32.png',
-        icon_16_href: '/favicon-16x16.png',
-        manifest_href: '/site.webmanifest',
-        icon_safari_color: '#da532c',
-        theme_color_content: '#ffffff',
-        description_content: 'Reloj personalizado para tu escritorio. Elige el color y tamaño de fondo y fuente para crear un reloj único y a tu medida.',
-        og_site_name: 'My Web Clock',
-        og_title: 'Reloj personalizado para tu escritorio',
-        og_description: 'Reloj personalizado para tu escritorio. Elige el color y tamaño de fondo y fuente para crear un reloj único y a tu medida.',
-        og_url: 'https://my-web-clock.onrender.com',
-        og_image: 'https://my-web-clock.onrender.com/og_image1.jpg',
-        article_tag_1: 'Clock',
-        article_tag_2: 'Customizable',
-        article_tag_3: 'App',
-        //modo: req.cookies.modo
-      });      
-});
-
-app.get('/login-reloj', function (req, res) {
-    res.render("login_reloj_sin_main")
+mongoose.connect(uri);
+var esquemaUsuario = mongoose.Schema({
+    id: String,
+    password: String,
+    preferencias: {
+      color_fondo: String,
+      color_fuente: String,
+      tamano_hora: Number,
+      tamano_segundos: Number,
+      tamano_fecha: Number
+    }
+  });
+  var Usuarios_reloj = mongoose.model("Usuarios_reloj", esquemaUsuario);
+  router.use(session({
+    saveUninitialized: false,
+    resave: true,
+    secret: 'un-secreto-muy-seguro'
+  }));
+router.get('/login', function (req, res) {
+    res.render("login")
   })
-app.post('/login-reloj', function(req, res){
+router.post('/login', function(req, res){
     //console.log(req.body.id +' ha iniciado sesión');
     if(!req.body.id || !req.body.password){
         res.render('login', {message: "Por favor, introduce tanto el ID como la contraseña"});
@@ -81,9 +35,11 @@ app.post('/login-reloj', function(req, res){
         } else {
             if(resBuscUno.id === req.body.id && resBuscUno.password === req.body.password){
             req.session.user = resBuscUno;
-            res.redirect('/plantilla_sin_main_protegida_reloj');
+            //res.redirect('/plantilla_sin_main_protegida_reloj');
+            let uri_usuario = `/acceso/reloj/${req.body.id}`;
+            res.redirect(uri_usuario);
             } else {
-            res.render('login_reloj_sin_main', {message: "Credenciales no válidas."});
+            res.render('login', {message: "Credenciales no válidas."});
             }
         }
         
@@ -100,7 +56,7 @@ function checkSignIn(req, res, next){
         next(err); //Error, intentando acceder a una página no autorizada
     }
 }
-app.get('/plantilla_sin_main_protegida_reloj', checkSignIn, function(req, res){
+router.get('/reloj/:id', checkSignIn, function(req, res){
   res.render('plantilla_sin_main_protegida_reloj', {
     id: req.session.user.id,
     //id: req.session.user.preferencias.color_fondo,
@@ -111,16 +67,16 @@ app.get('/plantilla_sin_main_protegida_reloj', checkSignIn, function(req, res){
     tamano_fecha: req.session.user.preferencias.tamano_fecha,
   })
 });
-app.get('/logout', function(req, res){
+router.get('/logout', function(req, res){
   req.session.destroy(function(){
      //console.log("Usuario desconectado.")
   });
   res.redirect('/');
 });
-app.get('/registrarse', function(req, res){
+router.get('/registrarse', function(req, res){
     res.render('signup_reloj_sin_main');
 });
-app.post('/registrarse', function(req, res){
+router.post('/registrarse', function(req, res){
   var reqBody = req.body;
   if (!reqBody.id || !reqBody.password) {
     res.render('mostrar_mensaje', {
@@ -131,7 +87,7 @@ app.post('/registrarse', function(req, res){
     Usuarios_reloj.findOne({id: reqBody.id}).then((resBuscUno) => {
       if (resBuscUno) {
         // Si el usuario ya existe, muestra un mensaje de error
-        res.render('mostrar_mensaje', {
+        res.render('login', {
           mensaje: "El usuario ya existe, inicie sesión", 
           tipo: "error"
         });
@@ -150,7 +106,7 @@ app.post('/registrarse', function(req, res){
         });
   
         newUser.save().then(() => {
-          res.render('login_reloj_sin_main', {
+          res.render('login', {
             mensaje: "Usuario creado correctamente. Inicie sesión", 
             tipo: "éxito", 
             persona: reqBody
@@ -175,15 +131,12 @@ app.post('/registrarse', function(req, res){
     //console.log(reqBody);
   }
 });
-app.use('/plantilla_sin_main_protegida_reloj', function(err, req, res, next){
+router.use('/reloj/:id', function(err, req, res, next){
     console.log(err);
     //El usuario debe estar autenticado. Redirígelo para iniciar sesión.
-    res.redirect('/login-reloj');
+    res.redirect('/login');
 });
-app.get('/signup-reloj', function (req, res) {
-    res.render("signup_reloj_sin_main")
-});
-app.post('/editar-fondo/:id', async function(req, res){
+router.post('/editar-fondo/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
     const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
@@ -202,7 +155,7 @@ app.post('/editar-fondo/:id', async function(req, res){
       console.log('Error: no se encontró el usuario');
     }
 });
-app.post('/editar-fuente/:id', async function(req, res){
+router.post('/editar-fuente/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
     const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
@@ -221,7 +174,7 @@ app.post('/editar-fuente/:id', async function(req, res){
       console.log('Error: no se encontró el usuario');
     }
 });
-app.post('/editar-hora/:id', async function(req, res){
+router.post('/editar-hora/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
     const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
@@ -240,7 +193,7 @@ app.post('/editar-hora/:id', async function(req, res){
       console.log('Error: no se encontró el usuario');
     }
 });
-app.post('/editar-fecha/:id', async function(req, res){
+router.post('/editar-fecha/:id', async function(req, res){
   const Usuarios_reloj = mongoose.model('Usuarios_reloj');
   const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
   const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
@@ -259,9 +212,7 @@ app.post('/editar-fecha/:id', async function(req, res){
     console.log('Error: no se encontró el usuario');
   }
 });
-app.get('*', function(req, res){
-  res.redirect('/');
-});
-app.listen(PORT, function () {
-    console.log(`El servidor está escuchando en el puerto ${PORT}`);
-});
+router.get('*', function(req, res){
+    res.redirect('/');
+  });
+module.exports = router;

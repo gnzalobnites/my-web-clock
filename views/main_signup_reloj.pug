@@ -3,7 +3,7 @@ main
     div#div_int_reloj.gap-1.d-block
       if(message)
         h4 #{message}
-      form(action = "/registrarse" method = "POST")
+      form(action = "/acceso/registrarse" method = "POST")
         input(id="id" name = "id" type = "text" required placeholder = "ID de usuario")
         br
         br
@@ -14,7 +14,7 @@ main
           button(type = "Submit") Registrarse
         br
         
-        div.d-flex.justify-content-center
+        div.d-flex.justify-content-center.d-none
           button(onclick="enviarSolicitud()") Enviar datos al servidor
     
 

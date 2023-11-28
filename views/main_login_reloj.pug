@@ -1,9 +1,9 @@
 main
   div#div_ext_reloj.d-flex.justify-content-center.align-items-center.gap-1(style="height: 55vh; padding-top: 25vh")
     div#div_int_reloj.gap-1.d-block
-      if(message)
-        h4.d-flex.justify-content-center #{message}
-      form(action = "/login-reloj" method = "POST")
+      if(mensaje)
+        h4=mensaje
+      form(action = "/acceso/login" method = "POST")
         input(name = "id" type = "text" required placeholder = "ID de usuario")
         br
         br

@@ -31,7 +31,7 @@ router.post('/login', function(req, res){
     if(!req.body.id || !req.body.password){
         res.render('login', {message: "Por favor, introduce tanto el ID como la contraseña"});
     } else {
-        Usuarios_reloj.findOne({id: req.body.id}).then((resBuscUno) => {
+        usuarios_reloj.findOne({id: req.body.id}).then((resBuscUno) => {
         if (resBuscUno == null) {
             res.render('signup_reloj_sin_main', {message: "Usuario no encontrado. Regístrese"})
         } else {
@@ -86,7 +86,7 @@ router.post('/registrarse', function(req, res){
       tipo: "error"
     });
   } else {
-    Usuarios_reloj.findOne({id: reqBody.id}).then((resBuscUno) => {
+    usuarios_reloj.findOne({id: reqBody.id}).then((resBuscUno) => {
       if (resBuscUno) {
         // Si el usuario ya existe, muestra un mensaje de error
         res.render('login', {
@@ -95,7 +95,7 @@ router.post('/registrarse', function(req, res){
         });
       } else {
         // Si el usuario no existe, crea uno nuevo
-        var newUser = new Usuarios_reloj({
+        var newUser = new usuarios_reloj({
           id: reqBody.id,
           password: reqBody.password,
           preferencias: {
@@ -142,7 +142,7 @@ router.get('/eliminar-cuenta', function (req,res) {
   res.render('eliminar_cuenta');
 })
 router.post('/eliminar-cuenta', async function(req, res){
-  const colecciónPersona = mongoose.model('Usuarios_reloj');
+  const colecciónPersona = mongoose.model('usuarios_reloj');
   const persona_encontrada = await colecciónPersona.findOneAndDelete({
     id: req.body.id,
     password: req.body.password
@@ -161,9 +161,9 @@ router.post('/eliminar-cuenta', async function(req, res){
 }
 );
 router.post('/editar-fondo/:id', async function(req, res){
-    const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-    const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
-    const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    const usuarios_reloj = mongoose.model('usuarios_reloj');
+    const persona_encontrada = await usuarios_reloj.findOne({id: req.params.id});
+    const persona_editada = await usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
         color_fondo: req.body.color_fondo,
         color_fuente: persona_encontrada.preferencias.color_fuente,
@@ -180,9 +180,9 @@ router.post('/editar-fondo/:id', async function(req, res){
     }
 });
 router.post('/editar-fuente/:id', async function(req, res){
-    const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-    const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
-    const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    const usuarios_reloj = mongoose.model('usuarios_reloj');
+    const persona_encontrada = await usuarios_reloj.findOne({id: req.params.id});
+    const persona_editada = await usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
         color_fondo: persona_encontrada.preferencias.color_fondo,
         color_fuente: req.body.color_fuente,
@@ -199,9 +199,9 @@ router.post('/editar-fuente/:id', async function(req, res){
     }
 });
 router.post('/editar-hora/:id', async function(req, res){
-    const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-    const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
-    const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+    const usuarios_reloj = mongoose.model('usuarios_reloj');
+    const persona_encontrada = await usuarios_reloj.findOne({id: req.params.id});
+    const persona_editada = await usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
       preferencias: {
         color_fondo: persona_encontrada.preferencias.color_fondo,
         color_fuente: persona_encontrada.preferencias.color_fuente,
@@ -218,9 +218,9 @@ router.post('/editar-hora/:id', async function(req, res){
     }
 });
 router.post('/editar-fecha/:id', async function(req, res){
-  const Usuarios_reloj = mongoose.model('Usuarios_reloj');
-  const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});
-  const persona_editada = await Usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
+  const usuarios_reloj = mongoose.model('usuarios_reloj');
+  const persona_encontrada = await usuarios_reloj.findOne({id: req.params.id});
+  const persona_editada = await usuarios_reloj.findOneAndUpdate({id: req.params.id}, {
     preferencias: {
       color_fondo: persona_encontrada.preferencias.color_fondo,
       color_fuente: persona_encontrada.preferencias.color_fuente,

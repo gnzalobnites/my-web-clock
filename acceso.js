@@ -17,7 +17,7 @@ var esquemaUsuario = mongoose.Schema({
       tamano_fecha: Number
     }
   });
-  var Usuarios_reloj = mongoose.model("Usuarios_reloj", esquemaUsuario);
+  var usuarios_reloj = mongoose.model("usuarios_reloj", esquemaUsuario);
   router.use(session({
     saveUninitialized: false,
     resave: true,

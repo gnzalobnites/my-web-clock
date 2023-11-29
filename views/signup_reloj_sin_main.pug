@@ -36,17 +36,18 @@ html(lang='es')
           let boton_acceder = document.getElementById('boton_acceder');
           boton_acceder.setAttribute('class', 'nav-item d-block');
       };
-      function enviarSolicitud() {
+      function eliminarCuenta() {
           var id = document.getElementById("id");
+          var id_value = id.value;
           var password = document.getElementById('password');
 
           var xhr = new XMLHttpRequest();
-          xhr.open("POST", "/reloj-pug/registrarse", true);
+          xhr.open("POST", `/acceso/eliminar-cuenta/${id.value}`, true);
           xhr.setRequestHeader("Content-Type", "application/json");
-          xhr.send({
+          xhr.send(JSON.stringify({
             id: id.value,
             password: password.value,
-          });
+          }));
       };
       let my_use = document.getElementById("my_use");
       let href = my_use.getAttribute("xlink:href");
@@ -98,14 +99,18 @@ html(lang='es')
         my_li.addEventListener("click", launch);
       }
       //test.js
-        var fondoLocal = localStorage.getItem("fondo");
-        document.body.style.backgroundColor =  fondoLocal;
-        var fuenteLocal = localStorage.getItem("fuente"); 
-        document.body.style.color = fuenteLocal;
-        var hamburguesa = document.getElementById("hamburguesa");
-        hamburguesa.style.color = fuenteLocal;
-        var marca = document.getElementById('marca');
-        marca.style.color = fuenteLocal;
+      var fondoLocal = localStorage.getItem("fondo");
+      document.body.style.backgroundColor =  fondoLocal == null ? '#000' : fondoLocal;
+      var fuenteLocal = localStorage.getItem("fuente"); 
+      document.body.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
+      var hamburguesa = document.getElementById("hamburguesa");
+      hamburguesa.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
+      var marca = document.getElementById('marca');
+      marca.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
+      let input_fondo = document.getElementById('input_fondo');
+      input_fondo.value = fondoLocal == null ? '#000' : fondoLocal;
+      let input_fuente = document.getElementById('input_fuente');
+      input_fuente.value = fuenteLocal == null ? '#00ff00': fuenteLocal;
 
         function cambiarFondo(val) {
             document.body.style.backgroundColor = val;

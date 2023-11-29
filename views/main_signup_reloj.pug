@@ -3,6 +3,7 @@ main
     div#div_int_reloj.gap-1.d-block
       if(mensaje)
         h4 #{mensaje}
+        br
       form(action = "/acceso/registrarse" method = "POST")
         input(id="id" name = "id" type = "text" required placeholder = "ID de usuario")
         br
@@ -11,10 +12,11 @@ main
         br
         br
         div.d-flex.justify-content-center
-          button(type = "Submit") Registrarse
+          button.btn.btn-outline-primary(type = "Submit") Registrarse
         br
         
-        div.d-flex.justify-content-center.d-none
-          button(onclick="enviarSolicitud()") Enviar datos al servidor
-    
+      div.d-flex.justify-content-center
+        a(href='/acceso/eliminar-cuenta')
+          button.btn.btn-outline-primary Eliminar la cuenta
+      
 

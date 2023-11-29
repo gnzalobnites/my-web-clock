@@ -4,8 +4,8 @@ var session = require('express-session');
 const URI = process.env.MONGODB_URI;
 var mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
-//mongoose.connect(uri);
-mongoose.connect(URI);
+mongoose.connect(uri);
+//mongoose.connect(URI);
 var esquemaUsuario = mongoose.Schema({
     id: String,
     password: String,
@@ -101,9 +101,9 @@ router.post('/registrarse', function(req, res){
           preferencias: {
             color_fondo: '#000',
             color_fuente: '#00ff00',
-            tamano_hora: 90,
-            tamano_segundos: 45,
-            tamano_fecha: 25
+            tamano_hora: 50,
+            tamano_segundos: 25,
+            tamano_fecha: 12
           }
         });
   
@@ -138,6 +138,28 @@ router.use('/reloj/:id', function(err, req, res, next){
     //El usuario debe estar autenticado. Redirígelo para iniciar sesión.
     res.redirect('/login');
 });
+router.get('/eliminar-cuenta', function (req,res) {
+  res.render('eliminar_cuenta');
+})
+router.post('/eliminar-cuenta', async function(req, res){
+  const colecciónPersona = mongoose.model('Usuarios_reloj');
+  const persona_encontrada = await colecciónPersona.findOneAndDelete({
+    id: req.body.id,
+    password: req.body.password
+  });
+  if (persona_encontrada) {
+    res.render('signup_reloj_sin_main', {
+        mensaje: "Cuenta eliminada con éxito", 
+        tipo: "éxito",
+    });
+  }else{
+    res.render('signup_reloj_sin_main', {
+      mensaje: "Error al borrar: No se encontró la cuenta", 
+      tipo: "error"
+    });
+  };
+}
+);
 router.post('/editar-fondo/:id', async function(req, res){
     const Usuarios_reloj = mongoose.model('Usuarios_reloj');
     const persona_encontrada = await Usuarios_reloj.findOne({id: req.params.id});

@@ -98,22 +98,33 @@ html(lang='es')
       }
       //test.js
       var color_fondo_usuario = '#{color_fondo}';
-      document.body.style.backgroundColor =  color_fondo_usuario;
+      document.body.style.backgroundColor =  color_fondo_usuario == null ? '#000' : color_fondo_usuario;
       var color_fuente_usuario = '#{color_fuente}'; 
-      document.body.style.color = color_fuente_usuario;
+      document.body.style.color = color_fuente_usuario == null ? '#00ff00' : color_fuente_usuario;
       var hamburguesa = document.getElementById("hamburguesa");
-      hamburguesa.style.color = color_fuente_usuario;
+      hamburguesa.style.color = color_fuente_usuario == null ? '#00ff00' : color_fuente_usuario;
       var marca = document.getElementById('marca');
-      marca.style.color = color_fuente_usuario;
+      marca.style.color = color_fuente_usuario == null ? '#00ff00' : color_fuente_usuario;
+
+      let input_fondo = document.getElementById('input_fondo');
+      input_fondo.value = color_fondo_usuario == null ? '#000' : color_fondo_usuario;
+      let input_fuente = document.getElementById('input_fuente');
+      input_fuente.value = color_fuente_usuario == null ? '#00ff00': color_fuente_usuario;
+      let max_tam_hora = document.getElementById('max_tam_hora');
+      max_tam_hora.value = tamano_hora_usuario == null ? 50 : tamano_hora_usuario;
+      let max_tam_fecha = document.getElementById('max_tam_fecha');
+      max_tam_fecha.value = tamaño_fecha_usuario == null ? 12 : tamaño_fecha_usuario; 
 
       var tamano_hora_usuario = '#{tamano_hora}';
       //var tamano_segundos_usuario = '#{tamano_segundos}';
       var tamano_segundos_usuario = tamano_hora_usuario/2;
       var tamaño_fecha_usuario = '#{tamano_fecha}';
 
-      var tamaHora = tamano_hora_usuario == null ? 90 : tamano_hora_usuario; 
-      var tamaSeg = tamano_segundos_usuario == null ? 45 : tamano_segundos_usuario;
-      var tamaFecha = tamaño_fecha_usuario == null ? 25 : tamaño_fecha_usuario;
+
+
+      var tamaHora = tamano_hora_usuario == null ? 50 : tamano_hora_usuario; 
+      var tamaSeg = tamano_segundos_usuario == null ? 25 : tamano_segundos_usuario;
+      var tamaFecha = tamaño_fecha_usuario == null ? 12 : tamaño_fecha_usuario;
 
       const addZero = i => {
         if (i < 10) {

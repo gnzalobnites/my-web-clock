@@ -1,24 +1,29 @@
 var fondoLocal = localStorage.getItem("fondo");
-document.body.style.backgroundColor =  fondoLocal == null ? '#000' : fondoLocal;
 var fuenteLocal = localStorage.getItem("fuente"); 
+var localHora = localStorage.getItem("tama_hora");
+var localSegs = localStorage.getItem("tama_segundos");
+var localFecha = localStorage.getItem("tama_fecha"); 
+
+document.body.style.backgroundColor =  fondoLocal == null ? '#000' : fondoLocal;
 document.body.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
+
 var hamburguesa = document.getElementById("hamburguesa");
 hamburguesa.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
 var marca = document.getElementById('marca');
 marca.style.color = fuenteLocal == null ? '#00ff00': fuenteLocal;
 
-var localHora = localStorage.getItem("tama_hora");
-var localSegs = localStorage.getItem("tama_segundos");
-var localFecha = localStorage.getItem("tama_fecha"); 
+let input_fondo = document.getElementById('input_fondo');
+input_fondo.value = fondoLocal == null ? '#000' : fondoLocal;
+let input_fuente = document.getElementById('input_fuente');
+input_fuente.value = fuenteLocal == null ? '#00ff00': fuenteLocal;
+let max_tam_hora = document.getElementById('max_tam_hora');
+max_tam_hora.value = localHora == null ? 50 : localHora;
+let max_tam_fecha = document.getElementById('max_tam_fecha');
+max_tam_fecha.value = localFecha == null ? 12 : localFecha; 
 
 var tamaHora = localHora == null ? 50 : localHora; 
 var tamaSeg = localSegs == null ? 25 : localSegs ;
-var tamaFecha = localFecha == null ? 12 : localFecha; 
-
-/*function addZero(i) {
-  if (i < 10) {i = "0" + i}
-  return i;
-}*/
+var tamaFecha = localFecha == null ? 12 : localFecha;
 
 const addZero = i => {
   if (i < 10) {

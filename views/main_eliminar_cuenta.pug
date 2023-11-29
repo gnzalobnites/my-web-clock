@@ -3,8 +3,7 @@ main
     div#div_int_reloj.gap-1.d-block
       if(mensaje)
         h4=mensaje
-        br
-      form(action = "/acceso/login" method = "POST")
+      form(action = "/acceso/eliminar-cuenta" method = "POST")
         input(id='id' name = "id" type = "text" required placeholder = "ID de usuario")
         br
         br
@@ -12,10 +11,8 @@ main
         br
         br
         div.d-flex.justify-content-center
-          button.btn.btn-outline-primary(type = "Submit") Iniciar sesión
+          button.btn.btn-outline-primary(type = "Submit") Eliminar la cuenta
         br
       div.d-flex.justify-content-center
-        a(href='/acceso/eliminar-cuenta')
-          button.btn.btn-outline-primary Eliminar la cuenta
-      
-
+        a(href='/')
+          button.btn.btn-outline-primary cancelar

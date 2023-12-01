@@ -251,11 +251,11 @@ router.get("/acceso/cron", function(req, res) {
     if (xhr.status === 200) {
       // La solicitud HTTP se realizó correctamente
       var datos = JSON.parse(xhr.responseText);
-      //res.send(datos);
-        console.log(datos);
+      res.send(datos);
+        //console.log(datos);
     } else {
       // La solicitud HTTP no se realizó correctamente
-      //res.status(xhr.status).send(xhr.statusText);
+      res.status(xhr.status).send(xhr.statusText);
     }
   };
 });

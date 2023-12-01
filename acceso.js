@@ -236,6 +236,29 @@ router.post('/editar-fecha/:id', async function(req, res){
     console.log('Error: no se encontró el usuario');
   }
 });
+router.get("/acceso/cron", function(req, res) {
+  // Crea una instancia de XMLHttpRequest
+  var xhr = new XMLHttpRequest();
+
+  // Configura la solicitud HTTP
+  xhr.open("GET", "https://pebble-reliable-vision.glitch.me", true);
+
+  // Envía la solicitud HTTP
+  xhr.send();
+
+  // Escucha el evento `onload` para procesar la respuesta
+  xhr.onload = function() {
+    if (xhr.status === 200) {
+      // La solicitud HTTP se realizó correctamente
+      var datos = JSON.parse(xhr.responseText);
+      //res.send(datos);
+        console.log(datos);
+    } else {
+      // La solicitud HTTP no se realizó correctamente
+      //res.status(xhr.status).send(xhr.statusText);
+    }
+  };
+});
 router.get('*', function(req, res){
     res.redirect('/');
   });

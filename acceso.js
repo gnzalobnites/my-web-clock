@@ -4,8 +4,8 @@ var session = require('express-session');
 const URI = process.env.MONGODB_URI;
 var mongoose = require('mongoose');
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
-//mongoose.connect(uri);
-mongoose.connect(URI);
+mongoose.connect(uri);
+//mongoose.connect(URI);
 var esquemaUsuario = mongoose.Schema({
     id: String,
     password: String,
@@ -59,16 +59,19 @@ function checkSignIn(req, res, next){
     }
 }
 router.get('/reloj/:id', checkSignIn, function(req, res){
-  res.render('plantilla_sin_main_protegida_reloj', {
-    id: req.session.user.id,
-    //id: req.session.user.preferencias.color_fondo,
-    color_fondo: req.session.user.preferencias.color_fondo,
-    color_fuente: req.session.user.preferencias.color_fuente,
-    tamano_hora: req.session.user.preferencias.tamano_hora,
-    tamano_segundos: req.session.user.preferencias.tamano_segundos,
-    tamano_fecha: req.session.user.preferencias.tamano_fecha,
-  })
+  usuarios_reloj.findOne({id: req.session.user.id}).then((resBuscUno) => {
+    //console.log(resBuscUno);
+    res.render('plantilla_sin_main_protegida_reloj', {
+      id: resBuscUno.id,
+      color_fondo: resBuscUno.preferencias.color_fondo,
+      color_fuente: resBuscUno.preferencias.color_fuente,
+      tamano_hora: resBuscUno.preferencias.tamano_hora,
+      tamano_segundos: resBuscUno.preferencias.tamano_segundos,
+      tamano_fecha: resBuscUno.preferencias.tamano_fecha,
+    });
+  });
 });
+
 router.get('/logout', function(req, res){
   req.session.destroy(function(){
      //console.log("Usuario desconectado.")

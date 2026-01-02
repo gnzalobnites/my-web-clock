@@ -1,7 +1,3 @@
-User-agent: Googlebot
-Disallow: /nogooglebot/
-
 User-agent: *
 Allow: /
-
-Sitemap: https://my-web-clock.onrender.com/mapa_del_sitio_reloj.txt
+Sitemap: https://my-web-clock.onrender.com/sitemap.xml

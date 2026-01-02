@@ -265,14 +265,14 @@ router.get("/acceso/cron", function(req, res) {
 router.get('*', function(req, res){
     res.redirect('/');
   });
-// Ruta para mantener MongoDB activo (sin autenticación)
+// Ruta pública para mantener MongoDB activo (sin redirecciones ni middlewares)
 router.get('/ping-mongo', async (req, res) => {
   try {
     // Realiza una operación mínima en la base de datos
-    const resultado = await usuarios_reloj.findOne().limit(1).lean();
-    res.status(200).send('OK: MongoDB está activo');
-  } catch (error) {
-    console.error('Error al hacer ping a MongoDB:', error);
+    await usuarios_reloj.findOne().limit(1).lean();
+    res.status(200).send('MongoDB activo');
+  } catch (err) {
+    console.error('Error al hacer ping a MongoDB:', err);
     res.status(500).send('Error');
   }
 });

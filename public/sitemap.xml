@@ -7,13 +7,13 @@
     <priority>1.0</priority>
   </url>
   <url>
-    <loc>https://my-web-clock.onrender.com/login-reloj</loc>
+    <loc>https://my-web-clock.onrender.com/acceso/login</loc>
     <lastmod>2026-01-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://my-web-clock.onrender.com/registrarse</loc>
+    <loc>https://my-web-clock.onrender.com/acceso/registrarse</loc>
     <lastmod>2026-01-03</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>

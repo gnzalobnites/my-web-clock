@@ -3,6 +3,17 @@ const router = express.Router();
 var session = require('express-session');
 const URI = process.env.MONGODB_URI;
 var mongoose = require('mongoose');
+// Ruta pública para mantener MongoDB activo (sin redirecciones ni middlewares)
+router.get('/ping-mongo', async (req, res) => {
+  try {
+    // Realiza una operación mínima en la base de datos
+    await usuarios_reloj.findOne().limit(1).lean();
+    res.status(200).send('MongoDB activo');
+  } catch (err) {
+    console.error('Error al hacer ping a MongoDB:', err);
+    res.status(500).send('Error');
+  }
+});
 const uri = 'mongodb://127.0.0.1:27017/mi_db';
 //mongoose.connect(uri);
 mongoose.connect(URI);
@@ -265,15 +276,4 @@ router.get("/acceso/cron", function(req, res) {
 router.get('*', function(req, res){
     res.redirect('/');
   });
-// Ruta pública para mantener MongoDB activo (sin redirecciones ni middlewares)
-router.get('/ping-mongo', async (req, res) => {
-  try {
-    // Realiza una operación mínima en la base de datos
-    await usuarios_reloj.findOne().limit(1).lean();
-    res.status(200).send('MongoDB activo');
-  } catch (err) {
-    console.error('Error al hacer ping a MongoDB:', err);
-    res.status(500).send('Error');
-  }
-});
 module.exports = router;

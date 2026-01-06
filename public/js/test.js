@@ -391,77 +391,117 @@ function ocultar_botones_sesion() {
     }
 }
 
-// ==================== FUNCIONES DE PANTALLA COMPLETA ====================
-let isFullscreen = false;
+// ==================== FUNCIONES DE PANTALLA COMPLETA (Versión Optimizada) ====================
 
 /**
- * Activa el modo pantalla completa
+ * Función unificada para activar/desactivar pantalla completa
+ * Reemplaza tanto launchFullScreen como cancelFullScreen
  */
-function launchFullScreen() {
+function togglePantallaCompleta() {
     try {
-        const element = document.documentElement;
-        
-        if (element.requestFullscreen) {
-            element.requestFullscreen();
-        } else if (element.mozRequestFullScreen) { /* Firefox */
-            element.mozRequestFullScreen();
-        } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-            element.webkitRequestFullscreen();
-        } else if (element.msRequestFullscreen) { /* IE/Edge */
-            element.msRequestFullscreen();
+        if (!document.fullscreenElement &&
+            !document.webkitFullscreenElement && 
+            !document.mozFullScreenElement &&
+            !document.msFullscreenElement) {
+            // Activar pantalla completa
+            const element = document.documentElement;
+            
+            if (element.requestFullscreen) {
+                element.requestFullscreen();
+            } else if (element.mozRequestFullScreen) { /* Firefox */
+                element.mozRequestFullScreen();
+            } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
+                element.webkitRequestfullscreen();
+            } else if (element.msRequestFullscreen) { /* IE/Edge */
+                element.msRequestFullscreen();
+            }
+        } else {
+            // Desactivar pantalla completa
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
         }
-        
-        isFullscreen = true;
-        actualizarIconoPantallaCompleta();
     } catch (error) {
-        console.error("Error al activar pantalla completa:", error);
+        console.error("Error en togglePantallaCompleta:", error);
     }
 }
 
 /**
- * Desactiva el modo pantalla completa
- */
-function cancelFullScreen() {
-    try {
-        if (document.exitFullscreen) {
-            document.exitFullscreen();
-        } else if (document.mozCancelFullScreen) {
-            document.mozCancelFullScreen();
-        } else if (document.webkitExitFullscreen) {
-            document.webkitExitFullscreen();
-        } else if (document.msExitFullscreen) {
-            document.msExitFullscreen();
-        }
-        
-        isFullscreen = false;
-        actualizarIconoPantallaCompleta();
-    } catch (error) {
-        console.error("Error al salir de pantalla completa:", error);
-    }
-}
-
-/**
- * Actualiza el icono de pantalla completa según el estado actual
+ * Actualiza el icono según el estado actual de pantalla completa
  */
 function actualizarIconoPantallaCompleta() {
     try {
         const my_use = document.getElementById("my_use");
-        if (!my_use) return;
+        if (!my_use) {
+            console.warn("Elemento 'my_use' no encontrado en esta página");
+            return;
+        }
         
+        // Verificar estado actual
+        const isFullscreen = !!(document.fullscreenElement ||
+                                document.webkitFullscreenElement || 
+                                document.mozFullScreenElement ||
+                                document.msFullscreenElement);
+        
+        // Actualizar icono
         const href = isFullscreen ? "#fullscreen-exit" : "#arrows-fullscreen";
         my_use.setAttribute("xlink:href", href);
         
+        // También actualizar el título del tooltip (opcional, mejora accesibilidad)
         const my_li = document.getElementById("my_li");
         if (my_li) {
-            // Limpiar eventos anteriores
-            my_li.replaceWith(my_li.cloneNode(true));
-            
-            // Reasignar evento
-            const newLi = document.getElementById("my_li");
-            newLi.onclick = isFullscreen ? cancelFullScreen : launchFullScreen;
+            my_li.title = isFullscreen ? "Salir de pantalla completa" : "Pantalla completa";
         }
+        
     } catch (error) {
         console.error("Error en actualizarIconoPantallaCompleta:", error);
+    }
+}
+
+/**
+ * Inicializa toda la funcionalidad de pantalla completa
+ */
+function inicializarPantallaCompleta() {
+    try {
+        const my_li = document.getElementById("my_li");
+        const my_use = document.getElementById("my_use");
+        
+        // Si no hay elementos de pantalla completa, salir silenciosamente
+        if (!my_li || !my_use) {
+            return; // No es un error, simplemente esta página no tiene el botón
+        }
+        
+        console.log("Inicializando pantalla completa...");
+        
+        // 1. Configurar el evento de clic
+        my_li.addEventListener("click", togglePantallaCompleta);
+        
+        // 2. Configurar icono inicial
+        actualizarIconoPantallaCompleta();
+        
+        // 3. Escuchar cambios de estado (F11, Escape, etc.)
+        const eventosCambio = [
+            'fullscreenchange',
+            'webkitfullscreenchange', 
+            'mozfullscreenchange',
+            'MSFullscreenChange'
+        ];
+        
+        eventosCambio.forEach(evento => {
+            document.addEventListener(evento, actualizarIconoPantallaCompleta);
+        });
+        
+        // 4. También actualizar al redimensionar (por si acaso)
+        window.addEventListener('resize', actualizarIconoPantallaCompleta);
+        
+    } catch (error) {
+        console.error("Error en inicializarPantallaCompleta:", error);
     }
 }
 

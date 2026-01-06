@@ -590,16 +590,13 @@ function valores() {
  */
 function inicializarAplicacion() {
     try {
-        // Aplicar colores iniciales (funciona en todas las páginas)
+        // 1. Aplicar colores iniciales (funciona en todas las páginas)
         aplicarColoresIniciales();
         
-        // Configurar pantalla completa
-        document.addEventListener('fullscreenchange', actualizarIconoPantallaCompleta);
-        document.addEventListener('webkitfullscreenchange', actualizarIconoPantallaCompleta);
-        document.addEventListener('mozfullscreenchange', actualizarIconoPantallaCompleta);
-        document.addEventListener('MSFullscreenChange', actualizarIconoPantallaCompleta);
+        // 2. Inicializar pantalla completa con la nueva función optimizada
+        inicializarPantallaCompleta(); // <- REEMPLAZA las 4 líneas de addEventListener
         
-        // Detectar tipo de página y ejecutar lógica específica
+        // 3. Detectar tipo de página y ejecutar lógica específica
         if (document.getElementById('hs_y_mins')) {
             // Página principal del reloj
             console.log("Inicializando página principal del reloj");

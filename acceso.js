@@ -120,6 +120,21 @@ router.post('/registrarse', function(req, res){
             tamano_fecha: 12
           }
         });
+
+        /*const preferencias = reqBody.preferencias || {
+          color_fondo: '#000',
+          color_fuente: '#00ff00',
+          tamaño_hora: 90,
+          tamaño_segundos: 45,
+          tamaño_fecha: 25
+        };
+
+        var newUser = new Usuarios_reloj({
+          id: reqBody.id,
+          password: reqBody.password,
+          preferencias: preferencias
+        });*/
+
   
         newUser.save().then(() => {
           res.render('login', {

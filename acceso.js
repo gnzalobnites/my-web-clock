@@ -118,7 +118,7 @@ router.post('/registrarse', function(req, res){
           tamaño_fecha: 25
         };
 
-        var newUser = new Usuarios_reloj({
+        var newUser = new usuarios_reloj({
           id: reqBody.id,
           password: reqBody.password,
           preferencias: preferencias

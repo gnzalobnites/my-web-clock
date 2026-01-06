@@ -4,19 +4,27 @@ main
       if(mensaje)
         h4 #{mensaje}
         br
-      form(action = "/acceso/registrarse" method = "POST")
-        input(id="id" name = "id" type = "text" required placeholder = "ID de usuario")
+      
+      //- FORMULARIO MEJORADO (sin onsubmit en el HTML)
+      form(id="formRegistro" action="/acceso/registrarse" method="POST")
+        input(id="id" name="id" type="text" required placeholder="ID de usuario")
         br
         br
-        input(id="password"  name = "password" type = "password" required placeholder = "Contraseña")
+        input(id="password" name="password" type="password" required placeholder="Contraseña")
         br
         br
+        
+        //- Campos ocultos para las preferencias
+        input(type="hidden" name="preferencias[color_fondo]" id="pref_fondo")
+        input(type="hidden" name="preferencias[color_fuente]" id="pref_fuente")
+        input(type="hidden" name="preferencias[tamano_hora]" id="pref_hora")
+        input(type="hidden" name="preferencias[tamano_segundos]" id="pref_segundos")
+        input(type="hidden" name="preferencias[tamano_fecha]" id="pref_fecha")
+        
         div.d-flex.justify-content-center
-          button.btn.btn-primary.btn-sm(type = "Submit") Registrarse
+          button.btn.btn-primary.btn-sm(type="submit") Registrarse
         br
         
       div.d-flex.justify-content-center
         a(href='/acceso/eliminar-cuenta')
-          button.btn.btn-primary.btn-sm Eliminar la cuenta
-      
-
+          button.btn.btn-primary.btn-sm(type="button") Eliminar la cuenta

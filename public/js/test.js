@@ -1,13 +1,8 @@
 /**************************************************************
- * ARCHIVO PRINCIPAL DE LÓGICA - My Web Clock (Versión Unificada)
+ * ARCHIVO PRINCIPAL DE LÓGICA - My Web Clock (Versión 2.0)
  * 
- * Este archivo contiene toda la lógica JavaScript para:
- *  - Página principal del reloj
- *  - Página de registro y autenticación
- *  - Gestión de personalización y sincronización
- * 
- * Estado: Refactorizado para centralizar toda la funcionalidad
- * Última revisión: [Fecha actual]
+ * Estado: Completo y corregido - Todas las funciones integradas
+ * Última actualización: [Fecha actual]
  **************************************************************/
 
 // ==================== CONFIGURACIÓN GLOBAL ====================
@@ -108,16 +103,22 @@ function printTime() {
  * Ajusta los valores máximos de los controles según el ancho de pantalla
  */
 function ajustarTamanosResponsivos() {
-    const anchoPantalla = window.innerWidth;
-    const maxTamHora = document.getElementById("max_tam_hora");
-    const maxTamFecha = document.getElementById("max_tam_fecha");
+    try {
+        const anchoPantalla = window.innerWidth;
+        const maxTamHora = document.getElementById("max_tam_hora");
+        const maxTamFecha = document.getElementById("max_tam_fecha");
 
-    if (maxTamHora) {
-        maxTamHora.max = anchoPantalla >= 601 ? 250 : 100;
-    }
-    
-    if (maxTamFecha) {
-        maxTamFecha.max = anchoPantalla >= 601 ? 60 : 30;
+        if (maxTamHora) {
+            maxTamHora.max = anchoPantalla >= 601 ? 250 : 100;
+            maxTamHora.title = `Máximo: ${maxTamHora.max}pt`;
+        }
+        
+        if (maxTamFecha) {
+            maxTamFecha.max = anchoPantalla >= 601 ? 60 : 30;
+            maxTamFecha.title = `Máximo: ${maxTamFecha.max}pt`;
+        }
+    } catch (error) {
+        console.error("Error en ajustarTamanosResponsivos:", error);
     }
 }
 
@@ -272,6 +273,121 @@ const redimFecha = (val4) => {
     }
 };
 
+// ==================== FUNCIONES DE PANTALLA COMPLETA ====================
+/**
+ * Activa el modo pantalla completa
+ * @param {HTMLElement} element - Elemento a mostrar en pantalla completa
+ */
+function launchFullScreen(element) {
+    try {
+        if (element.requestFullScreen) {
+            element.requestFullScreen();
+        } else if (element.mozRequestFullScreen) {
+            element.mozRequestFullScreen();
+        } else if (element.webkitRequestFullScreen) {
+            element.webkitRequestFullScreen();
+        }
+        
+        // Actualizar icono después de un breve retraso
+        setTimeout(actualizarIconoPantallaCompleta, 100);
+    } catch (error) {
+        console.error("Error al activar pantalla completa:", error);
+    }
+}
+
+/**
+ * Desactiva el modo pantalla completa
+ */
+function cancelFullScreen() {
+    try {
+        if (document.cancelFullScreen) {
+            document.cancelFullScreen();
+        } else if (document.mozCancelFullScreen) {
+            document.mozCancelFullScreen();
+        } else if (document.webkitCancelFullScreen) {
+            document.webkitCancelFullScreen();
+        }
+        
+        // Actualizar icono después de un breve retraso
+        setTimeout(actualizarIconoPantallaCompleta, 100);
+    } catch (error) {
+        console.error("Error al salir de pantalla completa:", error);
+    }
+}
+
+/**
+ * Actualiza el icono según el estado actual de pantalla completa
+ */
+function actualizarIconoPantallaCompleta() {
+    try {
+        const my_use = document.getElementById("my_use");
+        if (!my_use) {
+            console.warn("Elemento 'my_use' no encontrado en esta página");
+            return;
+        }
+        
+        // Verificar estado actual
+        const isFullscreen = !!(document.fullscreenElement ||
+                                document.webkitFullscreenElement || 
+                                document.mozFullScreenElement ||
+                                document.msFullscreenElement);
+        
+        // Actualizar icono
+        const href = isFullscreen ? "#fullscreen-exit" : "#arrows-fullscreen";
+        my_use.setAttribute("xlink:href", href);
+        
+    } catch (error) {
+        console.error("Error en actualizarIconoPantallaCompleta:", error);
+    }
+}
+
+/**
+ * Inicializa toda la funcionalidad de pantalla completa
+ */
+function inicializarPantallaCompleta() {
+    try {
+        const my_li = document.getElementById("my_li");
+        const my_use = document.getElementById("my_use");
+        
+        // Si no hay elementos de pantalla completa, salir silenciosamente
+        if (!my_li || !my_use) {
+            return;
+        }
+        
+        console.log("Inicializando pantalla completa...");
+        
+        // Configurar el evento de clic
+        my_li.addEventListener("click", function() {
+            if (!document.fullscreenElement &&
+                !document.webkitFullscreenElement && 
+                !document.mozFullScreenElement &&
+                !document.msFullscreenElement) {
+                launchFullScreen(document.documentElement);
+            } else {
+                cancelFullScreen();
+            }
+        });
+        
+        // Configurar icono inicial
+        actualizarIconoPantallaCompleta();
+        
+        // Escuchar cambios de estado (F11, Escape, etc.)
+        const eventosCambio = [
+            'fullscreenchange',
+            'webkitfullscreenchange', 
+            'mozfullscreenchange',
+            'MSFullscreenChange'
+        ];
+        
+        eventosCambio.forEach(evento => {
+            document.addEventListener(evento, actualizarIconoPantallaCompleta);
+        });
+        
+    } catch (error) {
+        console.error("Error en inicializarPantallaCompleta:", error);
+    }
+}
+
 // ==================== FUNCIONES DE REGISTRO Y AUTENTICACIÓN ====================
 /**
  * Prepara y envía las preferencias al formulario de registro
@@ -286,7 +402,8 @@ function agregarPreferencias() {
         ];
         
         for (const id of elementosRequeridos) {
-            if (!document.getElementById(id)) {
+            const elemento = document.getElementById(id);
+            if (!elemento) {
                 console.error(`Elemento ${id} no encontrado`);
                 return false;
             }
@@ -309,6 +426,162 @@ function agregarPreferencias() {
     } catch (error) {
         console.error("Error en agregarPreferencias:", error);
         return false;
+    }
+}
+
+/**
+ * Configura el formulario de registro para usar nuestra función
+ */
+function configurarFormularioRegistro() {
+    try {
+        const formRegistro = document.getElementById('formRegistro');
+        
+        if (!formRegistro) {
+            console.log("Formulario de registro no encontrado en esta página");
+            return;
+        }
+        
+        console.log("Configurando formulario de registro...");
+        
+        // Configurar el evento submit
+        formRegistro.addEventListener('submit', function(event) {
+            console.log("Formulario de registro enviado");
+            
+            // 1. Validar que los campos de usuario y contraseña estén completos
+            const idInput = document.getElementById('id');
+            const passwordInput = document.getElementById('password');
+            
+            if (!idInput || !idInput.value.trim()) {
+                alert("Por favor, ingrese un ID de usuario");
+                event.preventDefault();
+                return;
+            }
+            
+            if (!passwordInput || !passwordInput.value.trim()) {
+                alert("Por favor, ingrese una contraseña");
+                event.preventDefault();
+                return;
+            }
+            
+            if (passwordInput.value.length < 4) {
+                alert("La contraseña debe tener al menos 4 caracteres");
+                event.preventDefault();
+                return;
+            }
+            
+            // 2. Ejecutar función agregarPreferencias()
+            const esValido = agregarPreferencias();
+            
+            // 3. Si la función devuelve false, prevenir el envío
+            if (!esValido) {
+                event.preventDefault();
+                console.log("Envío del formulario detenido");
+            } else {
+                console.log("Formulario enviándose al servidor...");
+                // Mostrar indicador de carga
+                mostrarCargaRegistro(true);
+            }
+        });
+        
+    } catch (error) {
+        console.error("Error en configurarFormularioRegistro:", error);
+    }
+}
+
+/**
+ * Muestra/oculta un indicador de carga durante el registro
+ * @param {boolean} mostrar - true para mostrar, false para ocultar
+ */
+function mostrarCargaRegistro(mostrar) {
+    const botonRegistro = document.querySelector('#formRegistro button[type="submit"]');
+    
+    if (botonRegistro) {
+        if (mostrar) {
+            // Guardar el texto original si es la primera vez
+            if (!botonRegistro.dataset.originalText) {
+                botonRegistro.dataset.originalText = botonRegistro.textContent;
+            }
+            botonRegistro.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registrando...';
+            botonRegistro.disabled = true;
+        } else {
+            // Restaurar el texto original
+            if (botonRegistro.dataset.originalText) {
+                botonRegistro.textContent = botonRegistro.dataset.originalText;
+            } else {
+                botonRegistro.textContent = 'Registrarse';
+            }
+            botonRegistro.disabled = false;
+        }
+    }
+}
+
+/**
+ * Configura el botón de eliminar cuenta con mejor manejo
+ */
+function configurarBotonEliminarCuenta() {
+    try {
+        // Buscar el botón
+        const botonEliminar = document.querySelector('a[href="/acceso/eliminar-cuenta"] button');
+        
+        if (botonEliminar) {
+            // Agregar nuestro evento
+            botonEliminar.addEventListener('click', function(event) {
+                event.preventDefault();
+                
+                // Preguntar confirmación antes de proceder
+                if (confirm("¿Está seguro de que desea eliminar su cuenta? Esta acción es irreversible.")) {
+                    window.location.href = '/acceso/eliminar-cuenta';
+                }
+            });
+            
+            console.log("Botón de eliminar cuenta configurado");
+        }
+    } catch (error) {
+        console.error("Error en configurarBotonEliminarCuenta:", error);
+    }
+}
+
+/**
+ * Envía solicitud para eliminar una cuenta
+ */
+function eliminarCuenta() {
+    try {
+        const id = document.getElementById("id");
+        const password = document.getElementById('password');
+        
+        if (!id || !password) {
+            alert("Por favor, complete todos los campos");
+            return;
+        }
+        
+        if (!confirm("¿Está seguro de que desea eliminar su cuenta? Esta acción no se puede deshacer.")) {
+            return;
+        }
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/acceso/eliminar-cuenta", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                alert("Cuenta eliminada correctamente");
+                window.location.href = '/';
+            } else {
+                alert("Error al eliminar la cuenta. Verifique sus credenciales.");
+            }
+        };
+        
+        xhr.onerror = function() {
+            alert("Error de conexión. Intente nuevamente.");
+        };
+        
+        xhr.send(JSON.stringify({
+            id: id.value,
+            password: password.value
+        }));
+    } catch (error) {
+        console.error("Error en eliminarCuenta:", error);
+        alert("Ocurrió un error inesperado");
     }
 }
 
@@ -346,323 +619,6 @@ function ocultar_botones_sesion() {
         console.error("Error en ocultar_botones_sesion:", error);
     }
 }
-// ==================== FUNCIONES DE REGISTRO MEJORADAS ====================
-
-/**
- * Configura el formulario de registro para usar nuestra función
- * (NUEVA FUNCIÓN - AÑADIR ESTA)
- */
-function configurarFormularioRegistro() {
-    try {
-        const formRegistro = document.getElementById('formRegistro');
-        
-        if (!formRegistro) {
-            console.log("ℹ️ Formulario de registro no encontrado en esta página");
-            return;
-        }
-        
-        console.log("✅ Configurando formulario de registro...");
-        
-        // Configurar el evento submit (reemplaza el atributo onsubmit del HTML)
-        formRegistro.addEventListener('submit', function(event) {
-            console.log("📤 Formulario de registro enviado");
-            
-            // 1. Validar que los campos de usuario y contraseña estén completos
-            const idInput = document.getElementById('id');
-            const passwordInput = document.getElementById('password');
-            
-            if (!idInput || !idInput.value.trim()) {
-                alert("❌ Por favor, ingrese un ID de usuario");
-                event.preventDefault();
-                return;
-            }
-            
-            if (!passwordInput || !passwordInput.value.trim()) {
-                alert("❌ Por favor, ingrese una contraseña");
-                event.preventDefault();
-                return;
-            }
-            
-            if (passwordInput.value.length < 4) {
-                alert("⚠️ La contraseña debe tener al menos 4 caracteres");
-                event.preventDefault();
-                return;
-            }
-            
-            // 2. Ejecutar tu función existente agregarPreferencias()
-            const esValido = agregarPreferencias();
-            
-            // 3. Si la función devuelve false, prevenir el envío
-            if (!esValido) {
-                event.preventDefault();
-                console.log("⏸️ Envío del formulario detenido");
-            } else {
-                console.log("🚀 Formulario enviándose al servidor...");
-                // Opcional: mostrar indicador de carga
-                mostrarCargaRegistro(true);
-            }
-        });
-        
-    } catch (error) {
-        console.error("❌ Error en configurarFormularioRegistro:", error);
-    }
-}
-
-/**
- * Muestra/oculta un indicador de carga durante el registro
- * (NUEVA FUNCIÓN - AÑADIR ESTA)
- * @param {boolean} mostrar - true para mostrar, false para ocultar
- */
-function mostrarCargaRegistro(mostrar) {
-    const botonRegistro = document.querySelector('#formRegistro button[type="submit"]');
-    
-    if (botonRegistro) {
-        if (mostrar) {
-            // Guardar el texto original si es la primera vez
-            if (!botonRegistro.dataset.originalText) {
-                botonRegistro.dataset.originalText = botonRegistro.textContent;
-            }
-            botonRegistro.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registrando...';
-            botonRegistro.disabled = true;
-        } else {
-            // Restaurar el texto original
-            if (botonRegistro.dataset.originalText) {
-                botonRegistro.textContent = botonRegistro.dataset.originalText;
-            } else {
-                botonRegistro.textContent = 'Registrarse';
-            }
-            botonRegistro.disabled = false;
-        }
-    }
-}
-
-/**
- * Configura el botón de eliminar cuenta con mejor manejo
- * (NUEVA FUNCIÓN - AÑADIR ESTA)
- */
-function configurarBotonEliminarCuenta() {
-    try {
-        // Buscar el botón de diferentes maneras (flexible)
-        const botonEliminar = document.querySelector(
-            'button[onclick*="eliminarCuenta"], ' +
-            'a[href="/acceso/eliminar-cuenta"] button, ' +
-            'button:contains("Eliminar la cuenta")'
-        );
-        
-        if (botonEliminar) {
-            // Remover cualquier evento onclick existente
-            botonEliminar.removeAttribute('onclick');
-            
-            // Agregar nuestro evento mejorado
-            botonEliminar.addEventListener('click', function(event) {
-                event.preventDefault();
-                event.stopPropagation();
-                
-                // Preguntar confirmación antes de proceder
-                if (confirm("¿Está seguro de que desea eliminar su cuenta? Esta acción es irreversible.")) {
-                    window.location.href = '/acceso/eliminar-cuenta';
-                }
-            });
-            
-            console.log("✅ Botón de eliminar cuenta configurado");
-        }
-    } catch (error) {
-        console.error("❌ Error en configurarBotonEliminarCuenta:", error);
-    }
-}
-
-/**
- * Mejora la función eliminarCuenta existente para manejar mejor el formulario
- * (MEJORA DE TU FUNCIÓN EXISTENTE - REEMPLAZAR LA ACTUAL CON ESTA)
- */
-function eliminarCuenta() {
-    try {
-        // Primero, intentar obtener los datos del formulario de registro si existe
-        let idInput = document.getElementById("id");
-        let passwordInput = document.getElementById('password');
-        
-        // Si no están en la página actual, podrían estar en un modal o formulario separado
-        if (!idInput || !passwordInput) {
-            console.log("ℹ️ Campos no encontrados, redirigiendo a página de eliminación");
-            window.location.href = '/acceso/eliminar-cuenta';
-            return;
-        }
-        
-        const id = idInput.value.trim();
-        const password = passwordInput.value.trim();
-        
-        if (!id || !password) {
-            alert("Por favor, complete todos los campos (ID y contraseña)");
-            idInput?.focus();
-            return;
-        }
-        
-        if (!confirm("¿Está seguro de que desea eliminar su cuenta?\n\nID: " + id + "\n\nEsta acción no se puede deshacer.")) {
-            return;
-        }
-        
-        console.log("Enviando solicitud de eliminación para usuario:", id);
-        
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/acceso/eliminar-cuenta", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    const response = JSON.parse(xhr.responseText);
-                    alert(response.mensaje || "✅ Cuenta eliminada correctamente");
-                    
-                    // Limpiar localStorage y redirigir
-                    localStorage.clear();
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1500);
-                    
-                } catch (e) {
-                    alert("✅ Cuenta eliminada correctamente");
-                    localStorage.clear();
-                    setTimeout(() => {
-                        window.location.href = '/';
-                    }, 1500);
-                }
-            } else {
-                alert("❌ Error al eliminar la cuenta. Verifique sus credenciales.");
-            }
-        };
-        
-        xhr.onerror = function() {
-            alert("❌ Error de conexión. Intente nuevamente.");
-        };
-        
-        xhr.timeout = 10000; // 10 segundos de timeout
-        xhr.ontimeout = function() {
-            alert("⏰ La solicitud está tardando demasiado. Intente nuevamente.");
-        };
-        
-        xhr.send(JSON.stringify({
-            id: id,
-            password: password
-        }));
-        
-    } catch (error) {
-        console.error("❌ Error en eliminarCuenta:", error);
-        alert("Ocurrió un error inesperado. Por favor, intente nuevamente.");
-    }
-}
-// ==================== FUNCIONES DE PANTALLA COMPLETA (Versión Optimizada) ====================
-
-/**
- * Función unificada para activar/desactivar pantalla completa
- * Reemplaza tanto launchFullScreen como cancelFullScreen
- */
-function togglePantallaCompleta() {
-    try {
-        if (!document.fullscreenElement &&
-            !document.webkitFullscreenElement && 
-            !document.mozFullScreenElement &&
-            !document.msFullscreenElement) {
-            // Activar pantalla completa
-            const element = document.documentElement;
-            
-            if (element.requestFullscreen) {
-                element.requestFullscreen();
-            } else if (element.mozRequestFullScreen) { /* Firefox */
-                element.mozRequestFullScreen();
-            } else if (element.webkitRequestFullscreen) { /* Chrome, Safari & Opera */
-                element.webkitRequestfullscreen();
-            } else if (element.msRequestFullscreen) { /* IE/Edge */
-                element.msRequestFullscreen();
-            }
-        } else {
-            // Desactivar pantalla completa
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
-    } catch (error) {
-        console.error("Error en togglePantallaCompleta:", error);
-    }
-}
-
-/**
- * Actualiza el icono según el estado actual de pantalla completa
- */
-function actualizarIconoPantallaCompleta() {
-    try {
-        const my_use = document.getElementById("my_use");
-        if (!my_use) {
-            console.warn("Elemento 'my_use' no encontrado en esta página");
-            return;
-        }
-        
-        // Verificar estado actual
-        const isFullscreen = !!(document.fullscreenElement ||
-                                document.webkitFullscreenElement || 
-                                document.mozFullScreenElement ||
-                                document.msFullscreenElement);
-        
-        // Actualizar icono
-        const href = isFullscreen ? "#fullscreen-exit" : "#arrows-fullscreen";
-        my_use.setAttribute("xlink:href", href);
-        
-        // También actualizar el título del tooltip (opcional, mejora accesibilidad)
-        const my_li = document.getElementById("my_li");
-        if (my_li) {
-            my_li.title = isFullscreen ? "Salir de pantalla completa" : "Pantalla completa";
-        }
-        
-    } catch (error) {
-        console.error("Error en actualizarIconoPantallaCompleta:", error);
-    }
-}
-
-/**
- * Inicializa toda la funcionalidad de pantalla completa
- */
-function inicializarPantallaCompleta() {
-    try {
-        const my_li = document.getElementById("my_li");
-        const my_use = document.getElementById("my_use");
-        
-        // Si no hay elementos de pantalla completa, salir silenciosamente
-        if (!my_li || !my_use) {
-            return; // No es un error, simplemente esta página no tiene el botón
-        }
-        
-        console.log("Inicializando pantalla completa...");
-        
-        // 1. Configurar el evento de clic
-        my_li.addEventListener("click", togglePantallaCompleta);
-        
-        // 2. Configurar icono inicial
-        actualizarIconoPantallaCompleta();
-        
-        // 3. Escuchar cambios de estado (F11, Escape, etc.)
-        const eventosCambio = [
-            'fullscreenchange',
-            'webkitfullscreenchange', 
-            'mozfullscreenchange',
-            'MSFullscreenChange'
-        ];
-        
-        eventosCambio.forEach(evento => {
-            document.addEventListener(evento, actualizarIconoPantallaCompleta);
-        });
-        
-        // 4. También actualizar al redimensionar (por si acaso)
-        window.addEventListener('resize', actualizarIconoPantallaCompleta);
-        
-    } catch (error) {
-        console.error("Error en inicializarPantallaCompleta:", error);
-    }
-}
 
 // ==================== FUNCIONES DE SINCRONIZACIÓN ====================
 /**
@@ -682,17 +638,20 @@ async function sincronizarConfiguracionConBackend() {
             tamano_fecha: localStorage.getItem("tama_fecha") || '12'
         };
         
-        // Aquí iría la llamada al backend
-        // await fetch('/api/user/config', {
-        //     method: 'POST',
-        //     headers: {
-        //         'Authorization': `Bearer ${token}`,
-        //         'Content-Type': 'application/json'
-        //     },
-        //     body: JSON.stringify(config)
-        // });
-        
         console.log("Configuración sincronizada (simulado)", config);
+        
+        // NOTA: Descomenta esto cuando tengas tu backend listo
+        /*
+        await fetch('/api/user/config', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(config)
+        });
+        */
+        
     } catch (error) {
         console.error("Error en sincronizarConfiguracionConBackend:", error);
     }
@@ -752,8 +711,8 @@ function inicializarAplicacion() {
         // 1. Aplicar colores iniciales (funciona en todas las páginas)
         aplicarColoresIniciales();
         
-        // 2. Inicializar pantalla completa con la nueva función optimizada
-        inicializarPantallaCompleta(); // <- REEMPLAZA las 4 líneas de addEventListener
+        // 2. Inicializar pantalla completa
+        inicializarPantallaCompleta();
         
         // 3. Detectar tipo de página y ejecutar lógica específica
         if (document.getElementById('hs_y_mins')) {
@@ -768,21 +727,32 @@ function inicializarAplicacion() {
             window.addEventListener('resize', ajustarTamanosResponsivos);
             ajustarTamanosResponsivos();
             
-        } else if (document.getElementById('pref_fondo')) {
+        } else if (document.getElementById('pref_fondo') || document.getElementById('formRegistro')) {
             // Página de registro
             console.log("Inicializando página de registro");
             
-            // Configurar evento para el formulario
-            const form = document.querySelector('form[action="/acceso/registrarse"]');
-            if (form) {
-                form.onsubmit = agregarPreferencias;
+            // Configurar formulario con las nuevas funciones
+            configurarFormularioRegistro();
+            configurarBotonEliminarCuenta();
+            
+            // Verificar que los campos ocultos existan
+            const camposOcultos = ['pref_fondo', 'pref_fuente', 'pref_hora', 'pref_segundos', 'pref_fecha'];
+            const faltantes = camposOcultos.filter(id => !document.getElementById(id));
+            
+            if (faltantes.length > 0) {
+                console.warn("Campos ocultos faltantes:", faltantes);
+            } else {
+                console.log("Todos los campos del formulario están presentes");
             }
             
-            // Configurar botón de eliminar cuenta si existe
-            const btnEliminar = document.querySelector('button[onclick*="eliminarCuenta"]');
-            if (btnEliminar) {
-                btnEliminar.onclick = eliminarCuenta;
-            }
+            // Mostrar preferencias actuales en consola (para debugging)
+            console.log("Preferencias actuales en localStorage:", {
+                fondo: localStorage.getItem("fondo") || '#000 (predeterminado)',
+                fuente: localStorage.getItem("fuente") || '#00ff00 (predeterminado)',
+                hora: localStorage.getItem("tama_hora") || '50 (predeterminado)',
+                segundos: localStorage.getItem("tama_segundos") || '25 (predeterminado)',
+                fecha: localStorage.getItem("tama_fecha") || '12 (predeterminado)'
+            });
         }
         
         console.log("Aplicación inicializada correctamente");
@@ -799,6 +769,7 @@ if (document.readyState === 'loading') {
     inicializarAplicacion();
 }
 
+// ==================== EXPORTACIÓN GLOBAL ====================
 // Hacer funciones disponibles globalmente (necesario para onclick en HTML)
 window.cambiarFondo = cambiarFondo;
 window.cambiarFuente = cambiarFuente;

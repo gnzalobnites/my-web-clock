@@ -109,19 +109,8 @@ router.post('/registrarse', function(req, res){
         });
       } else {
         // Si el usuario no existe, crea uno nuevo
-        var newUser = new usuarios_reloj({
-          id: reqBody.id,
-          password: reqBody.password,
-          preferencias: {
-            color_fondo: '#000',
-            color_fuente: '#00ff00',
-            tamano_hora: 50,
-            tamano_segundos: 25,
-            tamano_fecha: 12
-          }
-        });
 
-        /*const preferencias = reqBody.preferencias || {
+        const preferencias = reqBody.preferencias || {
           color_fondo: '#000',
           color_fuente: '#00ff00',
           tamaño_hora: 90,
@@ -133,9 +122,8 @@ router.post('/registrarse', function(req, res){
           id: reqBody.id,
           password: reqBody.password,
           preferencias: preferencias
-        });*/
+        });
 
-  
         newUser.save().then(() => {
           res.render('login', {
             mensaje: "Usuario creado correctamente. Inicie sesión", 

@@ -812,3 +812,6 @@ window.mostrar_botones_sesion = mostrar_botones_sesion;
 window.ocultar_botones_sesion = ocultar_botones_sesion;
 window.launchFullScreen = launchFullScreen;
 window.cancelFullScreen = cancelFullScreen;
+window.configurarFormularioRegistro = configurarFormularioRegistro;
+window.mostrarCargaRegistro = mostrarCargaRegistro;
+window.configurarBotonEliminarCuenta = configurarBotonEliminarCuenta;

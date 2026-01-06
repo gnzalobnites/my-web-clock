@@ -313,50 +313,6 @@ function agregarPreferencias() {
 }
 
 /**
- * Envía solicitud para eliminar una cuenta
- */
-function eliminarCuenta() {
-    try {
-        const id = document.getElementById("id");
-        const password = document.getElementById('password');
-        
-        if (!id || !password) {
-            alert("Por favor, complete todos los campos");
-            return;
-        }
-        
-        if (!confirm("¿Está seguro de que desea eliminar su cuenta? Esta acción no se puede deshacer.")) {
-            return;
-        }
-        
-        const xhr = new XMLHttpRequest();
-        xhr.open("POST", "/acceso/eliminar-cuenta", true);
-        xhr.setRequestHeader("Content-Type", "application/json");
-        
-        xhr.onload = function() {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                alert("Cuenta eliminada correctamente");
-                window.location.href = '/';
-            } else {
-                alert("Error al eliminar la cuenta. Verifique sus credenciales.");
-            }
-        };
-        
-        xhr.onerror = function() {
-            alert("Error de conexión. Intente nuevamente.");
-        };
-        
-        xhr.send(JSON.stringify({
-            id: id.value,
-            password: password.value
-        }));
-    } catch (error) {
-        console.error("Error en eliminarCuenta:", error);
-        alert("Ocurrió un error inesperado");
-    }
-}
-
-/**
  * Muestra/oculta botones de sesión en la interfaz
  */
 function mostrar_botones_sesion() {
@@ -390,7 +346,210 @@ function ocultar_botones_sesion() {
         console.error("Error en ocultar_botones_sesion:", error);
     }
 }
+// ==================== FUNCIONES DE REGISTRO MEJORADAS ====================
 
+/**
+ * Configura el formulario de registro para usar nuestra función
+ * (NUEVA FUNCIÓN - AÑADIR ESTA)
+ */
+function configurarFormularioRegistro() {
+    try {
+        const formRegistro = document.getElementById('formRegistro');
+        
+        if (!formRegistro) {
+            console.log("ℹ️ Formulario de registro no encontrado en esta página");
+            return;
+        }
+        
+        console.log("✅ Configurando formulario de registro...");
+        
+        // Configurar el evento submit (reemplaza el atributo onsubmit del HTML)
+        formRegistro.addEventListener('submit', function(event) {
+            console.log("📤 Formulario de registro enviado");
+            
+            // 1. Validar que los campos de usuario y contraseña estén completos
+            const idInput = document.getElementById('id');
+            const passwordInput = document.getElementById('password');
+            
+            if (!idInput || !idInput.value.trim()) {
+                alert("❌ Por favor, ingrese un ID de usuario");
+                event.preventDefault();
+                return;
+            }
+            
+            if (!passwordInput || !passwordInput.value.trim()) {
+                alert("❌ Por favor, ingrese una contraseña");
+                event.preventDefault();
+                return;
+            }
+            
+            if (passwordInput.value.length < 4) {
+                alert("⚠️ La contraseña debe tener al menos 4 caracteres");
+                event.preventDefault();
+                return;
+            }
+            
+            // 2. Ejecutar tu función existente agregarPreferencias()
+            const esValido = agregarPreferencias();
+            
+            // 3. Si la función devuelve false, prevenir el envío
+            if (!esValido) {
+                event.preventDefault();
+                console.log("⏸️ Envío del formulario detenido");
+            } else {
+                console.log("🚀 Formulario enviándose al servidor...");
+                // Opcional: mostrar indicador de carga
+                mostrarCargaRegistro(true);
+            }
+        });
+        
+    } catch (error) {
+        console.error("❌ Error en configurarFormularioRegistro:", error);
+    }
+}
+
+/**
+ * Muestra/oculta un indicador de carga durante el registro
+ * (NUEVA FUNCIÓN - AÑADIR ESTA)
+ * @param {boolean} mostrar - true para mostrar, false para ocultar
+ */
+function mostrarCargaRegistro(mostrar) {
+    const botonRegistro = document.querySelector('#formRegistro button[type="submit"]');
+    
+    if (botonRegistro) {
+        if (mostrar) {
+            // Guardar el texto original si es la primera vez
+            if (!botonRegistro.dataset.originalText) {
+                botonRegistro.dataset.originalText = botonRegistro.textContent;
+            }
+            botonRegistro.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Registrando...';
+            botonRegistro.disabled = true;
+        } else {
+            // Restaurar el texto original
+            if (botonRegistro.dataset.originalText) {
+                botonRegistro.textContent = botonRegistro.dataset.originalText;
+            } else {
+                botonRegistro.textContent = 'Registrarse';
+            }
+            botonRegistro.disabled = false;
+        }
+    }
+}
+
+/**
+ * Configura el botón de eliminar cuenta con mejor manejo
+ * (NUEVA FUNCIÓN - AÑADIR ESTA)
+ */
+function configurarBotonEliminarCuenta() {
+    try {
+        // Buscar el botón de diferentes maneras (flexible)
+        const botonEliminar = document.querySelector(
+            'button[onclick*="eliminarCuenta"], ' +
+            'a[href="/acceso/eliminar-cuenta"] button, ' +
+            'button:contains("Eliminar la cuenta")'
+        );
+        
+        if (botonEliminar) {
+            // Remover cualquier evento onclick existente
+            botonEliminar.removeAttribute('onclick');
+            
+            // Agregar nuestro evento mejorado
+            botonEliminar.addEventListener('click', function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                
+                // Preguntar confirmación antes de proceder
+                if (confirm("¿Está seguro de que desea eliminar su cuenta? Esta acción es irreversible.")) {
+                    window.location.href = '/acceso/eliminar-cuenta';
+                }
+            });
+            
+            console.log("✅ Botón de eliminar cuenta configurado");
+        }
+    } catch (error) {
+        console.error("❌ Error en configurarBotonEliminarCuenta:", error);
+    }
+}
+
+/**
+ * Mejora la función eliminarCuenta existente para manejar mejor el formulario
+ * (MEJORA DE TU FUNCIÓN EXISTENTE - REEMPLAZAR LA ACTUAL CON ESTA)
+ */
+function eliminarCuenta() {
+    try {
+        // Primero, intentar obtener los datos del formulario de registro si existe
+        let idInput = document.getElementById("id");
+        let passwordInput = document.getElementById('password');
+        
+        // Si no están en la página actual, podrían estar en un modal o formulario separado
+        if (!idInput || !passwordInput) {
+            console.log("ℹ️ Campos no encontrados, redirigiendo a página de eliminación");
+            window.location.href = '/acceso/eliminar-cuenta';
+            return;
+        }
+        
+        const id = idInput.value.trim();
+        const password = passwordInput.value.trim();
+        
+        if (!id || !password) {
+            alert("Por favor, complete todos los campos (ID y contraseña)");
+            idInput?.focus();
+            return;
+        }
+        
+        if (!confirm("¿Está seguro de que desea eliminar su cuenta?\n\nID: " + id + "\n\nEsta acción no se puede deshacer.")) {
+            return;
+        }
+        
+        console.log("Enviando solicitud de eliminación para usuario:", id);
+        
+        const xhr = new XMLHttpRequest();
+        xhr.open("POST", "/acceso/eliminar-cuenta", true);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        
+        xhr.onload = function() {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    const response = JSON.parse(xhr.responseText);
+                    alert(response.mensaje || "✅ Cuenta eliminada correctamente");
+                    
+                    // Limpiar localStorage y redirigir
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                    
+                } catch (e) {
+                    alert("✅ Cuenta eliminada correctamente");
+                    localStorage.clear();
+                    setTimeout(() => {
+                        window.location.href = '/';
+                    }, 1500);
+                }
+            } else {
+                alert("❌ Error al eliminar la cuenta. Verifique sus credenciales.");
+            }
+        };
+        
+        xhr.onerror = function() {
+            alert("❌ Error de conexión. Intente nuevamente.");
+        };
+        
+        xhr.timeout = 10000; // 10 segundos de timeout
+        xhr.ontimeout = function() {
+            alert("⏰ La solicitud está tardando demasiado. Intente nuevamente.");
+        };
+        
+        xhr.send(JSON.stringify({
+            id: id,
+            password: password
+        }));
+        
+    } catch (error) {
+        console.error("❌ Error en eliminarCuenta:", error);
+        alert("Ocurrió un error inesperado. Por favor, intente nuevamente.");
+    }
+}
 // ==================== FUNCIONES DE PANTALLA COMPLETA (Versión Optimizada) ====================
 
 /**
